@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     }
 
     // Ən stabil işləyən rəsmi model
-    const model = 'gemini-1.5-flash';
+    const model = 'gemini-2.5-flash';
 
     try {
         const upstream = await fetch(
