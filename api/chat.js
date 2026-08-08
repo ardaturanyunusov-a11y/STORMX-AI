@@ -11,12 +11,19 @@ export default async function handler(req, res) {
     try {
         const { contents } = req.body;
         
+        const systemInstruction = {
+            role: "user",
+            parts: [{ text: "Sən STORMX AI-san. İstifadəçi hansı dildə yazır-yazsın, hər zaman yalnız və yalnız Azərbaycan dilində cavab verməlisən." }]
+        };
+
+        const fullContents = [systemInstruction, ...(Array.isArray(contents) ? contents : [{ role: "user", parts: [{ text: contents }] }])];
+
         const upstream = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents })
+                body: JSON.stringify({ contents: fullContents })
             }
         );
 
