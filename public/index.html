@@ -4,134 +4,221 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STORMX AI</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         body {
             background-color: #0b0f19;
-            color: #e5e7eb;
-            font-family: system-ui, -apple-system, sans-serif;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
         }
-        .gold-gradient {
-            background: linear-gradient(135deg, #bf953f, #fc6, #b38728, #fbf5b7, #aa771c);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #111827;
+            border-bottom: 1px solid #1f2937;
         }
-        .gold-border {
-            border-color: rgba(212, 175, 55, 0.3);
-        }
-        .gold-border:focus {
-            border-color: #d4af37;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-        }
-        .gold-btn {
-            background: linear-gradient(135deg, #d4af37, #aa771c);
-            color: #0b0f19;
+        .logo {
+            color: #f59e0b;
             font-weight: bold;
-            transition: all 0.3s ease;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
         }
-        .gold-btn:hover {
-            opacity: 0.9;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        select {
+            background-color: #1f2937;
+            color: #ffffff;
+            border: 1px solid #374151;
+            padding: 6px 12px;
+            border-radius: 6px;
+            outline: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .status-badge {
+            background-color: #1f2937;
+            color: #f59e0b;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #374151;
+            font-weight: bold;
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #f59e0b;
+            border-radius: 50%;
+        }
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            line-height: 1.5;
+            word-break: break-word;
+        }
+        .ai-message {
+            background-color: #161e2e;
+            color: #e5e7eb;
+            align-self: flex-start;
+            border: 1px solid #1f2937;
+        }
+        .user-message {
+            background-color: #1f2937;
+            color: #ffffff;
+            align-self: flex-end;
+            border: 1px solid #374151;
+        }
+        .message-sender {
+            font-size: 0.75rem;
+            color: #9ca3af;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+        .input-container {
+            padding: 15px 20px;
+            background-color: #111827;
+            border-top: 1px solid #1f2937;
+            display: flex;
+            gap: 10px;
+        }
+        input[type="text"] {
+            flex: 1;
+            background-color: #1f2937;
+            border: 1px solid #374151;
+            padding: 12px 15px;
+            border-radius: 8px;
+            color: #ffffff;
+            outline: none;
+            font-size: 1rem;
+        }
+        input[type="text"]::placeholder {
+            color: #9ca3af;
+        }
+        button.send-btn {
+            background-color: #f59e0b;
+            color: #0b0f19;
+            border: none;
+            padding: 0 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        button.send-btn:hover {
+            background-color: #d97706;
         }
     </style>
 </head>
-<body class="flex flex-col h-screen justify-between">
+<body>
 
-    <!-- Header -->
-    <header class="flex justify-between items-center px-6 py-4 border-b gold-border bg-[#0f1523]/50 backdrop-blur-md">
-        <div class="flex items-center space-x-3">
-            <h1 class="text-xl font-black tracking-wider gold-gradient">STORMX AI</h1>
-        </div>
-        
-        <div class="flex items-center space-x-4">
-            <!-- Dil Seçimi (Language Selector) -->
-            <select id="langSelect" onchange="changeLanguage(this.value)" class="bg-[#131b2e] text-amber-300 border gold-border text-sm rounded-lg px-3 py-1.5 outline-none cursor-pointer">
-                <option value="az">AZ</option>
-                <option value="ru">RU</option>
-                <option value="en">EN</option>
+    <header>
+        <div class="logo">STORMX AI</div>
+        <div class="header-controls">
+            <select id="languageSelect">
+                <option value="AZ">AZ</option>
+                <option value="EN">EN</option>
+                <option value="RU">RU</option>
             </select>
-
-            <div class="flex items-center space-x-2 bg-[#131b2e] px-3 py-1 rounded-full border gold-border">
-                <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-                <span id="statusText" class="text-xs text-amber-300 font-medium">HAZIR</span>
+            <div class="status-badge">
+                <div class="status-dot"></div> HAZIR
             </div>
         </div>
     </header>
 
-    <!-- Chat Box -->
-    <main id="chatContainer" class="flex-1 overflow-y-auto px-4 py-6 space-y-6 max-w-4xl w-full mx-auto">
-        <!-- Mesajlar bura gələcək -->
-        <div class="flex flex-col space-y-2">
-            <div class="text-xs text-amber-500/70 font-mono">STORMX AI</div>
-            <div class="bg-[#131b2e] border gold-border p-4 rounded-2xl max-w-[85%] text-sm leading-relaxed shadow-lg">
-                Salam! Mən STORMX AI-yam. Sizə necə kömək edə bilərəm?
-            </div>
+    <div class="chat-container" id="chatContainer">
+        <div class="message ai-message">
+            <div class="message-sender">STORMX AI</div>
+            Salam! Mən STORMX AI-yam. Sizə necə kömək edə bilərəm?
         </div>
-    </main>
+    </div>
 
-    <!-- Input Area -->
-    <footer class="p-4 bg-[#0f1523]/80 backdrop-blur-md border-t gold-border">
-        <div class="max-w-4xl mx-auto flex gap-3">
-            <input type="text" id="userInput" placeholder="Mesaj yazın..." class="flex-1 bg-[#131b2e] border gold-border rounded-xl px-4 py-3 text-sm text-white placeholder-gray-500 outline-none">
-            <button onclick="sendMessage()" id="sendBtn" class="gold-btn px-6 py-3 rounded-xl text-sm cursor-pointer">GÖNDƏR</option>
-        </div>
-    </footer>
+    <div class="input-container">
+        <input type="text" id="userInput" placeholder="Mesaj yazın...">
+        <button class="send-btn" id="sendBtn">GÖNDƏR</button>
+    </div>
 
     <script>
-        const translations = {
-            az: { placeholder: "Mesaj yazın...", send: "GÖNDƏR", status: "HAZIR", welcome: "Salam! Mən STORMX AI-yam. Sizə necə kömək edə bilərəm?" },
-            ru: { placeholder: "Введите сообщение...", send: "ОТПРАВИТЬ", status: "ГОТОВ", welcome: "Привет! Я STORMX AI. Чем могу помочь?" },
-            en: { placeholder: "Type a message...", send: "SEND", status: "READY", welcome: "Hello! I am STORMX AI. How can I help you?" }
-        };
+        const chatContainer = document.getElementById('chatContainer');
+        const userInput = document.getElementById('userInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const languageSelect = document.getElementById('languageSelect');
 
-        function changeLanguage(lang) {
-            const t = translations[lang];
-            document.getElementById('userInput').placeholder = t.placeholder;
-            document.getElementById('sendBtn').innerText = t.send;
-            document.getElementById('statusText').innerText = t.status;
+        let chatHistory = [];
+
+        async function sendMessage() {
+            const text = userInput.value.trim();
+            if (!text) return;
+
+            appendMessage('Siz', text, 'user-message');
+            chatHistory.push({ role: "user", parts: [{ text: text }] });
+            userInput.value = '';
+
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        contents: chatHistory,
+                        language: languageSelect.value 
+                    })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error?.message || 'Xəta baş verdi.');
+                }
+
+                const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Xəta baş verdi.";
+                
+                appendMessage('STORMX AI', aiResponseText, 'ai-message');
+                chatHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
+
+            } catch (err) {
+                appendMessage('STORMX AI', 'Xəta baş verdi.', 'ai-message');
+            }
         }
 
-        function sendMessage() {
-            const input = document.getElementById('userInput');
-            const container = document.getElementById('chatContainer');
-            if (!input.value.trim()) return;
-
-            // İstifadəçi mesajı
-            container.innerHTML += `
-                <div class="flex flex-col space-y-1 items-end">
-                    <div class="text-xs text-gray-500 font-mono">SİZ</div>
-                    <div class="bg-amber-500/10 border gold-border p-3.5 rounded-2xl max-w-[85%] text-sm leading-relaxed text-amber-100">${input.value}</div>
-                </div>
-            `;
-            
-            const text = input.value;
-            input.value = '';
-            container.scrollTop = container.scrollHeight;
-
-            // Arxa fondakı serverə sorğu (api/chat)
-            fetch('/api/chat', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: text }] }] })
-            })
-            .then(res => res.json())
-            .then(data => {
-                let aiReply = "Xəta baş verdi.";
-                try {
-                    aiReply = data.candidates[0].content.parts[0].text;
-                } catch(e) {}
-
-                container.innerHTML += `
-                    <div class="flex flex-col space-y-2">
-                        <div class="text-xs text-amber-500/70 font-mono">STORMX AI</div>
-                        <div class="bg-[#131b2e] border gold-border p-4 rounded-2xl max-w-[85%] text-sm leading-relaxed shadow-lg">${aiReply}</div>
-                    </div>
-                `;
-                container.scrollTop = container.scrollHeight;
-            }).catch(err => {
-                console.error(err);
-            });
+        function appendMessage(sender, text, className) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${className}`;
+            msgDiv.innerHTML = `<div class="message-sender">${sender}</div>${escapeHtml(text)}`;
+            chatContainer.appendChild(msgDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         }
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;");
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
     </script>
 </body>
 </html>
