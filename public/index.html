@@ -174,7 +174,7 @@
     <div class="chat-container" id="chatContainer">
         <div class="message ai-message">
             <div class="message-sender">STORMX AI</div>
-            Salam! Mən STORMX AI-yam. İstərsən şəkil yüklə, istərsə də yazışaq, sizə necə kömək edə bilərəm?
+            Salam! Mən STORMX AI-yam. Şəkil yükləyib sual verə bilərsən, sizə necə kömək edə bilərəm?
         </div>
     </div>
 
@@ -216,7 +216,6 @@
             const text = userInput.value.trim();
             if (!text && !selectedImageBase64) return;
 
-            // İstifadəçi mesajının hissələrini hazırlayırıq
             let userParts = [];
             if (text) {
                 userParts.push({ text: text });
@@ -230,7 +229,6 @@
                 });
             }
 
-            // Ekranda göstərmək üçün HTML
             let displayHtml = text ? escapeHtml(text) : '';
             if (selectedImageBase64) {
                 displayHtml += `<br><img src="data:${selectedImageMimeType};base64,${selectedImageBase64}" />`;
@@ -239,10 +237,7 @@
             appendMessageDiv('Siz', displayHtml, 'user-message');
             chatHistory.push({ role: "user", parts: userParts });
 
-            // Formu təmizləyirik
             userInput.value = '';
-            const imgToSend = selectedImageBase64;
-            const mimeToSend = selectedImageMimeType;
             selectedImageBase64 = null;
             selectedImageMimeType = null;
             imageInput.value = '';
@@ -270,7 +265,9 @@
                 chatHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
 
             } catch (err) {
-                appendMessageDiv('STORMX AI', 'Xəta baş verdi.', 'ai-message');
+                // Xəta olarsa, səhv olan mesajı tarixçədən silirik ki, sonrakı mesajlar qırılmasın!
+                chatHistory.pop();
+                appendMessageDiv('STORMX AI', 'Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.', 'ai-message');
             }
         }
 
