@@ -95,12 +95,18 @@
             margin-bottom: 4px;
             text-transform: uppercase;
         }
+        .message img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 8px;
+        }
         .input-container {
             padding: 15px 20px;
             background-color: #111827;
             border-top: 1px solid #1f2937;
             display: flex;
             gap: 10px;
+            align-items: center;
         }
         input[type="text"] {
             flex: 1;
@@ -115,11 +121,25 @@
         input[type="text"]::placeholder {
             color: #9ca3af;
         }
+        .upload-btn {
+            background-color: #1f2937;
+            color: #f59e0b;
+            border: 1px solid #374151;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background-color 0.2s;
+        }
+        .upload-btn:hover {
+            background-color: #374151;
+        }
         button.send-btn {
             background-color: #f59e0b;
             color: #0b0f19;
             border: none;
             padding: 0 25px;
+            height: 45px;
             border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
@@ -127,6 +147,11 @@
         }
         button.send-btn:hover {
             background-color: #d97706;
+        }
+        #imagePreviewName {
+            font-size: 0.8rem;
+            color: #f59e0b;
+            margin-left: 5px;
         }
     </style>
 </head>
@@ -149,12 +174,15 @@
     <div class="chat-container" id="chatContainer">
         <div class="message ai-message">
             <div class="message-sender">STORMX AI</div>
-            Salam! Mən STORMX AI-yam. Sizə necə kömək edə bilərəm?
+            Salam! Mən STORMX AI-yam. İstərsən şəkil yüklə, istərsə də yazışaq, sizə necə kömək edə bilərəm?
         </div>
     </div>
 
     <div class="input-container">
-        <input type="text" id="userInput" placeholder="Mesaj yazın...">
+        <input type="file" id="imageInput" accept="image/*" style="display: none;">
+        <button class="upload-btn" onclick="document.getElementById('imageInput').click()" title="Şəkil yüklə">📷</button>
+        <span id="imagePreviewName"></span>
+        <input type="text" id="userInput" placeholder="Mesaj yazın və ya şəkil göndərin...">
         <button class="send-btn" id="sendBtn">GÖNDƏR</button>
     </div>
 
@@ -163,16 +191,62 @@
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         const languageSelect = document.getElementById('languageSelect');
+        const imageInput = document.getElementById('imageInput');
+        const imagePreviewName = document.getElementById('imagePreviewName');
 
         let chatHistory = [];
+        let selectedImageBase64 = null;
+        let selectedImageMimeType = null;
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                imagePreviewName.textContent = `📎 ${file.name}`;
+                const reader = new FileReader();
+                reader.onload = function(uploadEvent) {
+                    const base64String = uploadEvent.target.result.split(',')[1];
+                    selectedImageBase64 = base64String;
+                    selectedImageMimeType = file.type;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
 
         async function sendMessage() {
             const text = userInput.value.trim();
-            if (!text) return;
+            if (!text && !selectedImageBase64) return;
 
-            appendMessage('Siz', text, 'user-message');
-            chatHistory.push({ role: "user", parts: [{ text: text }] });
+            // İstifadəçi mesajının hissələrini hazırlayırıq
+            let userParts = [];
+            if (text) {
+                userParts.push({ text: text });
+            }
+            if (selectedImageBase64) {
+                userParts.push({
+                    inlineData: {
+                        mimeType: selectedImageMimeType,
+                        data: selectedImageBase64
+                    }
+                });
+            }
+
+            // Ekranda göstərmək üçün HTML
+            let displayHtml = text ? escapeHtml(text) : '';
+            if (selectedImageBase64) {
+                displayHtml += `<br><img src="data:${selectedImageMimeType};base64,${selectedImageBase64}" />`;
+            }
+
+            appendMessageDiv('Siz', displayHtml, 'user-message');
+            chatHistory.push({ role: "user", parts: userParts });
+
+            // Formu təmizləyirik
             userInput.value = '';
+            const imgToSend = selectedImageBase64;
+            const mimeToSend = selectedImageMimeType;
+            selectedImageBase64 = null;
+            selectedImageMimeType = null;
+            imageInput.value = '';
+            imagePreviewName.textContent = '';
 
             try {
                 const response = await fetch('/api/chat', {
@@ -192,18 +266,18 @@
 
                 const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Xəta baş verdi.";
                 
-                appendMessage('STORMX AI', aiResponseText, 'ai-message');
+                appendMessageDiv('STORMX AI', escapeHtml(aiResponseText), 'ai-message');
                 chatHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
 
             } catch (err) {
-                appendMessage('STORMX AI', 'Xəta baş verdi.', 'ai-message');
+                appendMessageDiv('STORMX AI', 'Xəta baş verdi.', 'ai-message');
             }
         }
 
-        function appendMessage(sender, text, className) {
+        function appendMessageDiv(sender, htmlContent, className) {
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${className}`;
-            msgDiv.innerHTML = `<div class="message-sender">${sender}</div>${escapeHtml(text)}`;
+            msgDiv.innerHTML = `<div class="message-sender">${sender}</div>${htmlContent}`;
             chatContainer.appendChild(msgDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
