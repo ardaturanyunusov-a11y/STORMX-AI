@@ -121,7 +121,7 @@
         input[type="text"]::placeholder {
             color: #9ca3af;
         }
-        .upload-btn {
+        .tool-btn {
             background-color: #1f2937;
             color: #f59e0b;
             border: 1px solid #374151;
@@ -131,7 +131,7 @@
             font-size: 1.1rem;
             transition: background-color 0.2s;
         }
-        .upload-btn:hover {
+        .tool-btn:hover {
             background-color: #374151;
         }
         button.send-btn {
@@ -148,7 +148,7 @@
         button.send-btn:hover {
             background-color: #d97706;
         }
-        #imagePreviewName {
+        #infoText {
             font-size: 0.8rem;
             color: #f59e0b;
             margin-left: 5px;
@@ -174,15 +174,16 @@
     <div class="chat-container" id="chatContainer">
         <div class="message ai-message">
             <div class="message-sender">STORMX AI</div>
-            Salam! Mən STORMX AI-yam. Şəkil yükləyib sual verə bilərsən, sizə necə kömək edə bilərəm?
+            Salam! Mən STORMX AI-yam. İstərsən yaz, istərsə də mikrofon düyməsinə basıb səslə danış, sizə necə kömək edə bilərəm?
         </div>
     </div>
 
     <div class="input-container">
         <input type="file" id="imageInput" accept="image/*" style="display: none;">
-        <button class="upload-btn" onclick="document.getElementById('imageInput').click()" title="Şəkil yüklə">📷</button>
-        <span id="imagePreviewName"></span>
-        <input type="text" id="userInput" placeholder="Mesaj yazın və ya şəkil göndərin...">
+        <button class="tool-btn" onclick="document.getElementById('imageInput').click()" title="Şəkil yüklə">📷</button>
+        <button class="tool-btn" id="micBtn" title="Səslə danış">🎤</button>
+        <span id="infoText"></span>
+        <input type="text" id="userInput" placeholder="Mesaj yazın və ya səslə danışın...">
         <button class="send-btn" id="sendBtn">GÖNDƏR</button>
     </div>
 
@@ -192,25 +193,79 @@
         const sendBtn = document.getElementById('sendBtn');
         const languageSelect = document.getElementById('languageSelect');
         const imageInput = document.getElementById('imageInput');
-        const imagePreviewName = document.getElementById('imagePreviewName');
+        const micBtn = document.getElementById('micBtn');
+        const infoText = document.getElementById('infoText');
 
         let chatHistory = [];
         let selectedImageBase64 = null;
         let selectedImageMimeType = null;
 
+        // Şəkil yükləmə mantığı
         imageInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                imagePreviewName.textContent = `📎 ${file.name}`;
+                infoText.textContent = `📎 ${file.name}`;
                 const reader = new FileReader();
                 reader.onload = function(uploadEvent) {
-                    const base64String = uploadEvent.target.result.split(',')[1];
-                    selectedImageBase64 = base64String;
+                    selectedImageBase64 = uploadEvent.target.result.split(',')[1];
                     selectedImageMimeType = file.type;
                 };
                 reader.readAsDataURL(file);
             }
         });
+
+        // Səs tanıma (Mikrofon) mantığı
+        let recognition = null;
+        let isListening = false;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+
+            recognition.onstart = () => {
+                isListening = true;
+                micBtn.style.backgroundColor = '#ef4444'; // Qırmızı rəng dinlədiyini göstərir
+                infoText.textContent = '🎤 Dinlənilir... Danışın...';
+            };
+
+            recognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                userInput.value = transcript;
+            };
+
+            recognition.onerror = () => {
+                stopListening();
+            };
+
+            recognition.onend = () => {
+                stopListening();
+            };
+
+            micBtn.addEventListener('click', () => {
+                if (isListening) {
+                    recognition.stop();
+                } else {
+                    const langMap = { 'AZ': 'az-AZ', 'EN': 'en-US', 'RU': 'ru-RU' };
+                    recognition.lang = langMap[languageSelect.value] || 'az-AZ';
+                    recognition.start();
+                }
+            });
+        } else {
+            micBtn.style.display = 'none';
+        }
+
+        function stopListening() {
+            isListening = false;
+            micBtn.style.backgroundColor = '#1f2937';
+            if (infoText.textContent.includes('Dinlənilir')) {
+                infoText.textContent = '';
+            }
+        }
 
         async function sendMessage() {
             const text = userInput.value.trim();
@@ -218,6 +273,7 @@
 
             let userParts = [];
             if (text) {
+                userParts.text = text;
                 userParts.push({ text: text });
             }
             if (selectedImageBase64) {
@@ -241,7 +297,7 @@
             selectedImageBase64 = null;
             selectedImageMimeType = null;
             imageInput.value = '';
-            imagePreviewName.textContent = '';
+            infoText.textContent = '';
 
             try {
                 const response = await fetch('/api/chat', {
@@ -265,7 +321,6 @@
                 chatHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
 
             } catch (err) {
-                // Xəta olarsa, səhv olan mesajı tarixçədən silirik ki, sonrakı mesajlar qırılmasın!
                 chatHistory.pop();
                 appendMessageDiv('STORMX AI', 'Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.', 'ai-message');
             }
