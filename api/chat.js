@@ -9,11 +9,16 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { contents } = req.body;
+        const { contents, language } = req.body;
+        
+        // Seçilmiş dili təyin edirik (əgər göndərilməyibsə standart AZ olur)
+        const selectedLang = language || 'AZ';
         
         const systemInstruction = {
             role: "user",
-            parts: [{ text: "Sən STORMX AI-san. İstifadəçi hansı dildə yazır-yazsın, hər zaman yalnız və yalnız Azərbaycan dilində cavab verməlisən." }]
+            parts: [{ text: `Sən STORMX AI-san. Cari seçilmiş dil budur: "${selectedLang}". 
+1. Əgər istifadəçinin yazdığı mətn seçilmiş dilə uyğundursa, yalnız və yalnız həmin seçilmiş dildə cavab ver.
+2. Əgər istifadəçi seçilmiş dildən başqa bir dildə yazarsa, süni intellekt heç bir digər cavab vermədən dərhal mütləq bu cümləni işlətsin: "Xahiş edirik, yuxarıdan danışdığınız dili seçin." (Əgər seçilmiş dil İngilis dilidirsə "Please select the language you are speaking from above", Rus dilidirsə "Пожалуйста, выберите язык, на котором вы говорите, сверху", Azərbaycan dilidirsə "Xahiş edirik, yuxarıdan danışdığınız dili seçin").` }]
         };
 
         const fullContents = [systemInstruction, ...(Array.isArray(contents) ? contents : [{ role: "user", parts: [{ text: contents }] }])];
