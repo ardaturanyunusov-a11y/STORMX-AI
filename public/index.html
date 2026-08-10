@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STORMX AI - Anka Qusu</title>
+    <title>STORMX AI - Anka Qusu Live</title>
     <style>
         body {
             background-color: #0b0f19;
@@ -14,6 +14,7 @@
             display: flex;
             flex-direction: column;
             height: 100vh;
+            overflow: hidden;
         }
         header {
             display: flex;
@@ -22,6 +23,7 @@
             padding: 15px 20px;
             background-color: #111827;
             border-bottom: 1px solid #1f2937;
+            z-index: 10;
         }
         .logo-area {
             display: flex;
@@ -34,31 +36,6 @@
             font-size: 1.2rem;
             letter-spacing: 1px;
         }
-        /* Anka Qusu Vizual Effekti */
-        .anka-avatar {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background-color: #1f2937;
-            border: 1px solid #374151;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: #9ca3af;
-            transition: all 0.3s ease;
-        }
-        .anka-avatar.speaking {
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
-            color: #ffffff;
-            border-color: #f59e0b;
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
-            animation: pulseAnka 1s infinite alternate;
-        }
-        @keyframes pulseAnka {
-            0% { transform: scale(1); box-shadow: 0 0 10px rgba(245, 158, 11, 0.4); }
-            100% { transform: scale(1.05); box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); }
-        }
-
         .header-controls {
             display: flex;
             align-items: center;
@@ -89,7 +66,7 @@
             background-color: #22c55e;
             color: #ffffff;
             border-color: #22c55e;
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.4);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
         }
         .status-badge {
             background-color: #1f2937;
@@ -109,6 +86,8 @@
             background-color: #f59e0b;
             border-radius: 50%;
         }
+
+        /* Əsas Chat Ekranı */
         .chat-container {
             flex: 1;
             overflow-y: auto;
@@ -147,6 +126,128 @@
             border-radius: 8px;
             margin-top: 8px;
         }
+
+        /* -----------------------------------------
+           LIVE QAPI ŞÜŞƏSİ VƏ ANKA QUSU PORTALI
+           ----------------------------------------- */
+        .live-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 15, 25, 0.82);
+            backdrop-filter: blur(12px);
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: dropFromSky 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes dropFromSky {
+            0% {
+                opacity: 0;
+                transform: translateY(-100px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .glass-portal {
+            width: 90%;
+            max-width: 600px;
+            background: linear-gradient(145deg, rgba(31, 41, 55, 0.6), rgba(15, 23, 42, 0.8));
+            border: 2px solid rgba(245, 158, 11, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(245, 158, 11, 0.2);
+            border-radius: 24px;
+            padding: 40px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Anka Qusu Avatarı və Animasiyası */
+        .anka-bird-container {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.3) 0%, rgba(239, 68, 68, 0.2) 70%, transparent 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin-bottom: 25px;
+            border: 2px solid #f59e0b;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
+            animation: floatBird 3s ease-in-out infinite;
+        }
+
+        @keyframes floatBird {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .anka-emoji {
+            font-size: 4rem;
+            transition: transform 0.2s;
+        }
+
+        /* Danışanda ağzının və başının tərpənmə effekti */
+        .anka-bird-container.speaking-active .anka-emoji {
+            animation: talkMouth 0.3s infinite alternate ease-in-out;
+        }
+
+        @keyframes talkMouth {
+            0% { transform: scale(1) rotate(-3deg); }
+            100% { transform: scale(1.15) rotate(3deg); filter: drop-shadow(0 0 10px #ef4444); }
+        }
+
+        .live-title {
+            color: #f59e0b;
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+
+        .live-speech-bubble {
+            background-color: rgba(17, 24, 39, 0.9);
+            border: 1px solid #374151;
+            padding: 20px;
+            border-radius: 16px;
+            color: #e5e7eb;
+            font-size: 1.1rem;
+            min-height: 70px;
+            width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .close-live-btn {
+            background-color: #ef4444;
+            color: #ffffff;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.2s;
+        }
+        .close-live-btn:hover {
+            background-color: #dc2626;
+        }
+
+        /* Mesaj yazma paneli */
         .input-container {
             padding: 15px 20px;
             background-color: #111827;
@@ -154,6 +255,7 @@
             display: flex;
             gap: 10px;
             align-items: center;
+            z-index: 10;
         }
         input[type="text"] {
             flex: 1;
@@ -207,9 +309,6 @@
     <header>
         <div class="logo-area">
             <div class="logo">STORMX AI</div>
-            <div id="ankaAvatar" class="anka-avatar">
-                <span>🔥</span> <span id="ankaStatusText">Anka Qusu: Dinləyir</span>
-            </div>
         </div>
         <div class="header-controls">
             <button id="liveBtn" class="live-btn">🔴 LIVE</button>
@@ -224,10 +323,25 @@
         </div>
     </header>
 
+    <!-- Normal Chat Ekranı -->
     <div class="chat-container" id="chatContainer">
         <div class="message ai-message">
-            <div class="message-sender">STORMX AI & Anka Qusu</div>
-            Salam! Mən STORMX AI-yam. LIVE rejimini yandıranda Anka Qusu səslə sizinlə danışacaq!
+            <div class="message-sender">STORMX AI</div>
+            Salam! Mən STORMX AI-yam. LIVE düyməsinə basaraq Anka Qusunun canlı qapı portalını aça bilərsən!
+        </div>
+    </div>
+
+    <!-- LIVE QAPI ŞÜŞƏSİ VƏ ANKA QUSU EKRANI (Başlanğıcda gizlidir) -->
+    <div id="liveOverlay" class="live-overlay" style="display: none;">
+        <div class="glass-portal">
+            <div id="ankaBirdContainer" class="anka-bird-container">
+                <span class="anka-emoji">🦅</span>
+            </div>
+            <div class="live-title">ANKA QUSU - LIVE PORTAL</div>
+            <div id="liveSpeechText" class="live-speech-bubble">
+                Salam! Mən Anka Qusuyam. Səni dinləyirəm, buyur danış...
+            </div>
+            <button class="close-live-btn" id="closeLiveBtn">LIVE-I BAĞLA</button>
         </div>
     </div>
 
@@ -248,57 +362,58 @@
         const imageInput = document.getElementById('imageInput');
         const micBtn = document.getElementById('micBtn');
         const liveBtn = document.getElementById('liveBtn');
+        const liveOverlay = document.getElementById('liveOverlay');
+        const closeLiveBtn = document.getElementById('closeLiveBtn');
+        const liveSpeechText = document.getElementById('liveSpeechText');
+        const ankaBirdContainer = document.getElementById('ankaBirdContainer');
         const infoText = document.getElementById('infoText');
-        const ankaAvatar = document.getElementById('ankaAvatar');
-        const ankaStatusText = document.getElementById('ankaStatusText');
 
         let chatHistory = [];
         let selectedImageBase64 = null;
         let selectedImageMimeType = null;
         let isLiveMode = false;
 
-        // LIVE rejiminin idarə edilməsi
+        // LIVE Rejimi Açmaq
         liveBtn.addEventListener('click', () => {
-            isLiveMode = !isLiveMode;
-            if (isLiveMode) {
-                liveBtn.classList.add('active');
-                liveBtn.textContent = '🟢 LIVE AKTİV';
-                infoText.textContent = '🔊 Səsli cavab aktivdir';
-                ankaStatusText.textContent = 'Anka Qusu: Hazırdır';
-            } else {
-                liveBtn.classList.remove('active');
-                liveBtn.textContent = '🔴 LIVE';
-                infoText.textContent = '';
-                ankaStatusText.textContent = 'Anka Qusu: Dinləyir';
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
-                    ankaAvatar.classList.remove('speaking');
-                }
-            }
+            isLiveMode = true;
+            liveOverlay.style.display = 'flex';
+            liveBtn.classList.add('active');
+            liveBtn.textContent = '🟢 LIVE AKTİV';
+            speakText("Salam! Mən Anka Qusuyam. Səni dinləyirəm, buyur danış.");
         });
 
-        // Anka Qusunun səsləndirmə funksiyası
+        // LIVE Rejimi Bağlamaq
+        closeLiveBtn.addEventListener('click', () => {
+            isLiveMode = false;
+            liveOverlay.style.display = 'none';
+            liveBtn.classList.remove('active');
+            liveBtn.textContent = '🔴 LIVE';
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+            }
+            ankaBirdContainer.classList.remove('speaking-active');
+        });
+
+        // Anka Qusunun Səsləndirmə və Ağız/Baş Tərpənmə Animasiyası
         function speakText(text) {
             if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
             
+            liveSpeechText.textContent = text;
             const utterance = new SpeechSynthesisUtterance(text);
             const langMap = { 'AZ': 'az-AZ', 'EN': 'en-US', 'RU': 'ru-RU' };
             utterance.lang = langMap[languageSelect.value] || 'az-AZ';
 
             utterance.onstart = () => {
-                ankaAvatar.classList.add('speaking');
-                ankaStatusText.textContent = 'Anka Qusu danışır... 🔥';
+                ankaBirdContainer.classList.add('speaking-active');
             };
 
             utterance.onend = () => {
-                ankaAvatar.classList.remove('speaking');
-                ankaStatusText.textContent = isLiveMode ? 'Anka Qusu: Hazırdır' : 'Anka Qusu: Dinləyir';
+                ankaBirdContainer.classList.remove('speaking-active');
             };
 
             utterance.onerror = () => {
-                ankaAvatar.classList.remove('speaking');
-                ankaStatusText.textContent = 'Anka Qusu: Hazırdır';
+                ankaBirdContainer.classList.remove('speaking-active');
             };
 
             window.speechSynthesis.speak(utterance);
@@ -331,7 +446,10 @@
             recognition.onstart = () => {
                 isListening = true;
                 micBtn.style.backgroundColor = '#ef4444';
-                infoText.textContent = '🎤 Dinlənilir... Danışın...';
+                infoText.textContent = '🎤 Dinlənilir...';
+                if (isLiveMode) {
+                    liveSpeechText.textContent = 'Dinləyirəm... Danışın...';
+                }
             };
 
             recognition.onresult = (event) => {
@@ -340,6 +458,9 @@
                     transcript += event.results[i][0].transcript;
                 }
                 userInput.value = transcript;
+                if (isLiveMode) {
+                    liveSpeechText.textContent = `Siz: "${transcript}"`;
+                }
             };
 
             recognition.onerror = () => {
@@ -348,6 +469,10 @@
 
             recognition.onend = () => {
                 stopListening();
+                // Əgər live rejimdə mikrofonla danışıbsa və mətn yazılıbsa, avtomatik göndərək
+                if (isLiveMode && userInput.value.trim()) {
+                    sendMessage();
+                }
             };
 
             micBtn.addEventListener('click', () => {
@@ -367,7 +492,7 @@
             isListening = false;
             micBtn.style.backgroundColor = '#1f2937';
             if (infoText.textContent.includes('Dinlənilir')) {
-                infoText.textContent = isLiveMode ? '🔊 Səsli cavab aktivdir' : '';
+                infoText.textContent = '';
             }
         }
 
@@ -400,7 +525,11 @@
             selectedImageBase64 = null;
             selectedImageMimeType = null;
             imageInput.value = '';
-            if (!isLiveMode) infoText.textContent = '';
+            infoText.textContent = '';
+
+            if (isLiveMode) {
+                liveSpeechText.textContent = 'Anka Qusu düşünür... 🤔';
+            }
 
             try {
                 const response = await fetch('/api/chat', {
@@ -423,14 +552,18 @@
                 appendMessageDiv('STORMX AI', escapeHtml(aiResponseText), 'ai-message');
                 chatHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
 
-                // Əgər LIVE rejimi aktivdirsə, Anka Qusu səslə danışır
+                // Əgər LIVE rejimi aktivdirsə, Anka Qusu qapı şüşəsində səslə danışır
                 if (isLiveMode) {
                     speakText(aiResponseText);
                 }
 
             } catch (err) {
                 chatHistory.pop();
-                appendMessageDiv('STORMX AI', 'Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.', 'ai-message');
+                const errText = 'Xəta baş verdi. Yenidən cəhd edin.';
+                appendMessageDiv('STORMX AI', errText, 'ai-message');
+                if (isLiveMode) {
+                    speakText(errText);
+                }
             }
         }
 
