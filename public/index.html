@@ -127,41 +127,33 @@
             margin-top: 8px;
         }
 
-        /* -----------------------------------------
-           LIVE QAPI ŞÜŞƏSİ VƏ ANKA QUSU PORTALI
-           ----------------------------------------- */
+        /* LIVE QAPI ŞÜŞƏSİ VƏ ANKA QUSU PORTALI */
         .live-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(11, 15, 25, 0.82);
+            background: rgba(11, 15, 25, 0.88);
             backdrop-filter: blur(12px);
             z-index: 100;
             display: flex;
             justify-content: center;
             align-items: center;
-            animation: dropFromSky 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: dropFromSky 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
         @keyframes dropFromSky {
-            0% {
-                opacity: 0;
-                transform: translateY(-100px) scale(0.9);
-            }
-            100% {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            0% { opacity: 0; transform: translateY(-80px) scale(0.9); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .glass-portal {
             width: 90%;
             max-width: 600px;
-            background: linear-gradient(145deg, rgba(31, 41, 55, 0.6), rgba(15, 23, 42, 0.8));
-            border: 2px solid rgba(245, 158, 11, 0.4);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(245, 158, 11, 0.2);
+            background: linear-gradient(145deg, rgba(31, 41, 55, 0.7), rgba(15, 23, 42, 0.9));
+            border: 2px solid rgba(245, 158, 11, 0.5);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(245, 158, 11, 0.3);
             border-radius: 24px;
             padding: 40px 30px;
             display: flex;
@@ -171,7 +163,6 @@
             position: relative;
         }
 
-        /* Anka Qusu Avatarı və Animasiyası */
         .anka-bird-container {
             width: 140px;
             height: 140px;
@@ -197,14 +188,13 @@
             transition: transform 0.2s;
         }
 
-        /* Danışanda ağzının və başının tərpənmə effekti */
         .anka-bird-container.speaking-active .anka-emoji {
-            animation: talkMouth 0.3s infinite alternate ease-in-out;
+            animation: talkMouth 0.25s infinite alternate ease-in-out;
         }
 
         @keyframes talkMouth {
             0% { transform: scale(1) rotate(-3deg); }
-            100% { transform: scale(1.15) rotate(3deg); filter: drop-shadow(0 0 10px #ef4444); }
+            100% { transform: scale(1.18) rotate(3deg); filter: drop-shadow(0 0 12px #ef4444); }
         }
 
         .live-title {
@@ -216,7 +206,7 @@
         }
 
         .live-speech-bubble {
-            background-color: rgba(17, 24, 39, 0.9);
+            background-color: rgba(17, 24, 39, 0.95);
             border: 1px solid #374151;
             padding: 20px;
             border-radius: 16px;
@@ -228,8 +218,18 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             line-height: 1.5;
+        }
+
+        .mic-status-indicator {
+            font-size: 0.9rem;
+            color: #22c55e;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .close-live-btn {
@@ -331,7 +331,7 @@
         </div>
     </div>
 
-    <!-- LIVE QAPI ŞÜŞƏSİ VƏ ANKA QUSU EKRANI (Başlanğıcda gizlidir) -->
+    <!-- LIVE QAPI ŞÜŞƏSİ VƏ ANKA QUSU EKRANI -->
     <div id="liveOverlay" class="live-overlay" style="display: none;">
         <div class="glass-portal">
             <div id="ankaBirdContainer" class="anka-bird-container">
@@ -340,6 +340,9 @@
             <div class="live-title">ANKA QUSU - LIVE PORTAL</div>
             <div id="liveSpeechText" class="live-speech-bubble">
                 Salam! Mən Anka Qusuyam. Səni dinləyirəm, buyur danış...
+            </div>
+            <div id="micStatusIndicator" class="mic-status-indicator">
+                🎤 Mikrofon aktivdir, səslə danışa bilərsən...
             </div>
             <button class="close-live-btn" id="closeLiveBtn">LIVE-I BAĞLA</button>
         </div>
@@ -365,6 +368,7 @@
         const liveOverlay = document.getElementById('liveOverlay');
         const closeLiveBtn = document.getElementById('closeLiveBtn');
         const liveSpeechText = document.getElementById('liveSpeechText');
+        const micStatusIndicator = document.getElementById('micStatusIndicator');
         const ankaBirdContainer = document.getElementById('ankaBirdContainer');
         const infoText = document.getElementById('infoText');
 
@@ -372,19 +376,78 @@
         let selectedImageBase64 = null;
         let selectedImageMimeType = null;
         let isLiveMode = false;
+        let recognition = null;
+        let isAiSpeaking = false;
+
+        // Səs tanıma sistemini quraşdırırıq
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = true; // Fasiləsiz dinləmə
+            recognition.interimResults = true;
+
+            recognition.onresult = (event) => {
+                if (isAiSpeaking) return; // Əgər Anka Qusu danırsa, mikrofon səsimizi nəzərə almasın
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    transcript += event.results[i][0].transcript;
+                }
+                userInput.value = transcript;
+                if (isLiveMode) {
+                    liveSpeechText.textContent = `Siz: "${transcript}"`;
+                }
+            };
+
+            recognition.onerror = () => {
+                // Xəta olduqda yenidən başlatmağa çalışırıq
+                if (isLiveMode && !isAiSpeaking) {
+                    try { recognition.start(); } catch(e) {}
+                }
+            };
+
+            recognition.onend = () => {
+                // Əgər live rejimi hələ aktivdirsə və AI danışmırsa, mikrofonu dərhal avtomatik yenidən açırıq
+                if (isLiveMode && !isAiSpeaking) {
+                    try { recognition.start(); } catch(e) {}
+                }
+            };
+        }
+
+        function startListening() {
+            if (!recognition) return;
+            try {
+                const langMap = { 'AZ': 'az-AZ', 'EN': 'en-US', 'RU': 'ru-RU' };
+                recognition.lang = langMap[languageSelect.value] || 'az-AZ';
+                recognition.start();
+                if (micStatusIndicator) micStatusIndicator.textContent = '🎤 Mikrofon aktivdir, danışın...';
+            } catch (e) {
+                // Artıq işləyirsə heç nə etmirik
+            }
+        }
+
+        function stopListening() {
+            if (!recognition) return;
+            try {
+                recognition.stop();
+            } catch (e) {}
+        }
 
         // LIVE Rejimi Açmaq
         liveBtn.addEventListener('click', () => {
             isLiveMode = true;
+            chatContainer.innerHTML = ''; // Yazışmaları təmizləyirik (görünməz edirik)
             liveOverlay.style.display = 'flex';
             liveBtn.classList.add('active');
             liveBtn.textContent = '🟢 LIVE AKTİV';
+            
+            startListening();
             speakText("Salam! Mən Anka Qusuyam. Səni dinləyirəm, buyur danış.");
         });
 
         // LIVE Rejimi Bağlamaq
         closeLiveBtn.addEventListener('click', () => {
             isLiveMode = false;
+            stopListening();
             liveOverlay.style.display = 'none';
             liveBtn.classList.remove('active');
             liveBtn.textContent = '🔴 LIVE';
@@ -394,12 +457,17 @@
             ankaBirdContainer.classList.remove('speaking-active');
         });
 
-        // Anka Qusunun Səsləndirmə və Ağız/Baş Tərpənmə Animasiyası
+        // Anka Qusunun Səsləndirmə funksiyası (Danışanda mikrofonu müvəqqəti söndürürük)
         function speakText(text) {
             if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
             
+            isAiSpeaking = true;
+            stopListening(); // Öz səsini eşitməməsi üçün mikrofonu dayandırırıq
+
             liveSpeechText.textContent = text;
+            if (micStatusIndicator) micStatusIndicator.textContent = '🦅 Anka Qusu danışır... (dinlənilir)';
+
             const utterance = new SpeechSynthesisUtterance(text);
             const langMap = { 'AZ': 'az-AZ', 'EN': 'en-US', 'RU': 'ru-RU' };
             utterance.lang = langMap[languageSelect.value] || 'az-AZ';
@@ -410,10 +478,19 @@
 
             utterance.onend = () => {
                 ankaBirdContainer.classList.remove('speaking-active');
+                isAiSpeaking = false;
+                if (isLiveMode) {
+                    userInput.value = ''; // Inputu təmizləyirik ki, yeni söz deyə bilək
+                    startListening(); // Danışıq bitdi, mikrofonu yenidən açırıq!
+                }
             };
 
             utterance.onerror = () => {
                 ankaBirdContainer.classList.remove('speaking-active');
+                isAiSpeaking = false;
+                if (isLiveMode) {
+                    startListening();
+                }
             };
 
             window.speechSynthesis.speak(utterance);
@@ -433,67 +510,12 @@
             }
         });
 
-        // Səs tanıma (Mikrofon) mantığı
-        let recognition = null;
-        let isListening = false;
-
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.continuous = false;
-            recognition.interimResults = true;
-
-            recognition.onstart = () => {
-                isListening = true;
-                micBtn.style.backgroundColor = '#ef4444';
-                infoText.textContent = '🎤 Dinlənilir...';
-                if (isLiveMode) {
-                    liveSpeechText.textContent = 'Dinləyirəm... Danışın...';
-                }
-            };
-
-            recognition.onresult = (event) => {
-                let transcript = '';
-                for (let i = event.resultIndex; i < event.results.length; i++) {
-                    transcript += event.results[i][0].transcript;
-                }
-                userInput.value = transcript;
-                if (isLiveMode) {
-                    liveSpeechText.textContent = `Siz: "${transcript}"`;
-                }
-            };
-
-            recognition.onerror = () => {
-                stopListening();
-            };
-
-            recognition.onend = () => {
-                stopListening();
-                // Əgər live rejimdə mikrofonla danışıbsa və mətn yazılıbsa, avtomatik göndərək
-                if (isLiveMode && userInput.value.trim()) {
-                    sendMessage();
-                }
-            };
-
+        // Adi mikrofon düyməsi (Live olmayan rejim üçün)
+        if (micBtn && recognition) {
             micBtn.addEventListener('click', () => {
-                if (isListening) {
-                    recognition.stop();
-                } else {
-                    const langMap = { 'AZ': 'az-AZ', 'EN': 'en-US', 'RU': 'ru-RU' };
-                    recognition.lang = langMap[languageSelect.value] || 'az-AZ';
-                    recognition.start();
-                }
+                startListening();
+                infoText.textContent = '🎤 Dinlənilir...';
             });
-        } else {
-            micBtn.style.display = 'none';
-        }
-
-        function stopListening() {
-            isListening = false;
-            micBtn.style.backgroundColor = '#1f2937';
-            if (infoText.textContent.includes('Dinlənilir')) {
-                infoText.textContent = '';
-            }
         }
 
         async function sendMessage() {
@@ -529,6 +551,7 @@
 
             if (isLiveMode) {
                 liveSpeechText.textContent = 'Anka Qusu düşünür... 🤔';
+                stopListening(); // Serverə sorğu gedərkən dinləməni dayandırırıq
             }
 
             try {
@@ -552,9 +575,8 @@
                 appendMessageDiv('STORMX AI', escapeHtml(aiResponseText), 'ai-message');
                 chatHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
 
-                // Əgər LIVE rejimi aktivdirsə, Anka Qusu qapı şüşəsində səslə danışır
                 if (isLiveMode) {
-                    speakText(aiResponseText);
+                    speakText(aiResponseText); // Cavabı səsləndiririk və bitən kimi mikrofonu avtomatik açırıq
                 }
 
             } catch (err) {
@@ -584,7 +606,9 @@
 
         sendBtn.addEventListener('click', sendMessage);
         userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
         });
     </script>
 </body>
