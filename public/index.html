@@ -132,9 +132,7 @@
             margin-top: 8px;
         }
 
-        /* -----------------------------------------
-           ULTIMATE LIVE QAPI ŞÜŞƏSİ VƏ ANKA PORTALI
-           ----------------------------------------- */
+        /* ULTIMATE LIVE PORTAL */
         .live-overlay {
             position: fixed;
             top: 0;
@@ -148,11 +146,11 @@
             justify-content: center;
             align-items: center;
             padding: 15px;
-            animation: dropFromSky 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: dropFromSky 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
         @keyframes dropFromSky {
-            0% { opacity: 0; transform: translateY(-80px) scale(0.9); }
+            0% { opacity: 0; transform: translateY(-50px) scale(0.95); }
             100% { opacity: 1; transform: translateY(0) scale(1); }
         }
 
@@ -170,16 +168,14 @@
             text-align: center;
             position: relative;
             overflow: hidden;
-            transition: border-color 0.4s, box-shadow 0.4s;
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
 
-        /* Emosional Rejim Çərçivələri */
         .glass-portal.state-listening { border-color: #f59e0b; box-shadow: 0 0 35px rgba(245, 158, 11, 0.3); }
         .glass-portal.state-thinking { border-color: #3b82f6; box-shadow: 0 0 35px rgba(59, 130, 246, 0.4); }
         .glass-portal.state-speaking { border-color: #ef4444; box-shadow: 0 0 45px rgba(239, 68, 68, 0.5); }
         .glass-portal.state-error { border-color: #dc2626; box-shadow: 0 0 35px rgba(220, 38, 38, 0.5); }
 
-        /* Arxa fondakı alov qığılcımları üçün Canvas */
         #portalCanvas {
             position: absolute;
             top: 0;
@@ -267,7 +263,6 @@
             gap: 6px;
         }
 
-        /* Səs sürəti tənzimləmə paneli */
         .settings-row {
             display: flex;
             align-items: center;
@@ -300,7 +295,6 @@
             background-color: #dc2626;
         }
 
-        /* Mesaj yazma paneli */
         .input-container {
             padding: 12px 15px;
             background-color: #111827;
@@ -397,7 +391,7 @@
     <div class="chat-container" id="chatContainer">
         <div class="message ai-message">
             <div class="message-sender">STORMX AI</div>
-            Salam! Mən STORMX AI-yam. LIVE düyməsinə basaraq alovlu qığılcımlı və səs dalğalı Anka Qusu portalını aça bilərsən!
+            Salam! Mən STORMX AI-yam. Sürətli və harf-harf yazı maşını effekti ilə səni gözləyirəm!
         </div>
     </div>
 
@@ -416,7 +410,6 @@
                 <div id="micStatusIndicator" class="mic-status-indicator">
                     🎤 Mikrofon aktivdir, danış və ya əmr ver...
                 </div>
-                <!-- Səs sürəti tənzimləmə paneli -->
                 <div class="settings-row">
                     <label for="speedRange">Səs Sürəti:</label>
                     <input type="range" id="speedRange" min="0.7" max="1.4" step="0.1" value="1">
@@ -462,12 +455,10 @@
         let recognition = null;
         let isAiSpeaking = false;
 
-        // Səs sürəti tənzimlənməsi
         speedRange.addEventListener('input', () => {
             speedVal.textContent = speedRange.value + 'x';
         });
 
-        // Canvas Alov Qığılcımları və Səs Dalğası Animasiyası
         const ctx = portalCanvas.getContext('2d');
         let particles = [];
         let animationFrameId;
@@ -523,10 +514,9 @@
                 p.draw();
             });
 
-            // Əgər AI danışırsa və ya dinləyirsə ətrafda səs dalğası dairələri çəkək
             if (isLiveMode) {
                 const centerX = portalCanvas.width / 2;
-                const centerY = 90; // Anka qusunun mərkəzi
+                const centerY = 90;
                 const time = Date.now() * 0.003;
                 const radius = 60 + Math.sin(time) * (isAiSpeaking ? 12 : 5);
 
@@ -542,12 +532,10 @@
             animationFrameId = requestAnimationFrame(animateCanvas);
         }
 
-        // Emosional Rejim Dəyişdirici
         function setPortalState(state) {
             glassPortal.className = 'glass-portal state-' + state;
         }
 
-        // Səs tanıma və Səsli Əmrlər sistemi
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
@@ -562,8 +550,6 @@
                 }
                 
                 const lowerTranscript = transcript.toLowerCase().trim();
-
-                // Səsli Əmrlər (Voice Commands)
                 if (lowerTranscript.includes('bağla') || lowerTranscript.includes('dayandır')) {
                     closeLiveBtn.click();
                     return;
@@ -753,7 +739,8 @@
 
                 const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Xəta baş verdi.";
                 
-                appendMessageDiv('STORMX AI', escapeHtml(aiResponseText), 'ai-message');
+                // Harf-harf yazı maşını effekti ilə mesajı əlavə edirik
+                appendTypewriterMessage('STORMX AI', aiResponseText, 'ai-message');
                 chatHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
 
                 if (isLiveMode) {
@@ -763,7 +750,7 @@
             } catch (err) {
                 chatHistory.pop();
                 const errText = 'Xəta baş verdi. Yenidən cəhd edin.';
-                appendMessageDiv('STORMX AI', errText, 'ai-message');
+                appendTypewriterMessage('STORMX AI', errText, 'ai-message');
                 if (isLiveMode) {
                     setPortalState('error');
                     speakText(errText);
@@ -777,6 +764,28 @@
             msgDiv.innerHTML = `<div class="message-sender">${sender}</div>${htmlContent}`;
             chatContainer.appendChild(msgDiv);
             chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Yazı maşını (Typewriter) effekti funksiyası
+        function appendTypewriterMessage(sender, text, className) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${className}`;
+            msgDiv.innerHTML = `<div class="message-sender">${sender}</div><span class="text-content"></span>`;
+            chatContainer.appendChild(msgDiv);
+            
+            const textSpan = msgDiv.querySelector('.text-content');
+            let i = 0;
+            const speed = 15; // Hər hərfin yazılma sürəti (milisaniyə)
+
+            function typeWriter() {
+                if (i < text.length) {
+                    textSpan.textContent += text.charAt(i);
+                    i++;
+                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                    setTimeout(typeWriter, speed);
+                }
+            }
+            typeWriter();
         }
 
         function escapeHtml(text) {
