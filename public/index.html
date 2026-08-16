@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STORMX AI - Anka Qusu Live</title>
+    <title>STORMX AI - Anka Qusu Ultimate Live</title>
     <style>
         * {
             box-sizing: border-box;
@@ -132,15 +132,17 @@
             margin-top: 8px;
         }
 
-        /* LIVE QAPI ŞÜŞƏSİ VƏ ANKA QUSU PORTALI */
+        /* -----------------------------------------
+           ULTIMATE LIVE QAPI ŞÜŞƏSİ VƏ ANKA PORTALI
+           ----------------------------------------- */
         .live-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(11, 15, 25, 0.9);
-            backdrop-filter: blur(12px);
+            background: rgba(11, 15, 25, 0.92);
+            backdrop-filter: blur(14px);
             z-index: 100;
             display: flex;
             justify-content: center;
@@ -156,8 +158,8 @@
 
         .glass-portal {
             width: 100%;
-            max-width: 500px;
-            background: linear-gradient(145deg, rgba(31, 41, 55, 0.8), rgba(15, 23, 42, 0.95));
+            max-width: 520px;
+            background: linear-gradient(145deg, rgba(31, 41, 55, 0.85), rgba(15, 23, 42, 0.95));
             border: 2px solid rgba(245, 158, 11, 0.5);
             box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(245, 158, 11, 0.3);
             border-radius: 24px;
@@ -167,6 +169,34 @@
             align-items: center;
             text-align: center;
             position: relative;
+            overflow: hidden;
+            transition: border-color 0.4s, box-shadow 0.4s;
+        }
+
+        /* Emosional Rejim Çərçivələri */
+        .glass-portal.state-listening { border-color: #f59e0b; box-shadow: 0 0 35px rgba(245, 158, 11, 0.3); }
+        .glass-portal.state-thinking { border-color: #3b82f6; box-shadow: 0 0 35px rgba(59, 130, 246, 0.4); }
+        .glass-portal.state-speaking { border-color: #ef4444; box-shadow: 0 0 45px rgba(239, 68, 68, 0.5); }
+        .glass-portal.state-error { border-color: #dc2626; box-shadow: 0 0 35px rgba(220, 38, 38, 0.5); }
+
+        /* Arxa fondakı alov qığılcımları üçün Canvas */
+        #portalCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .portal-content {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .anka-bird-container {
@@ -178,7 +208,7 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border: 2px solid #f59e0b;
             box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
             animation: floatBird 3s ease-in-out infinite;
@@ -207,7 +237,7 @@
             color: #f59e0b;
             font-size: 1.2rem;
             font-weight: bold;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             letter-spacing: 1px;
         }
 
@@ -223,7 +253,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             line-height: 1.4;
         }
 
@@ -231,10 +261,28 @@
             font-size: 0.85rem;
             color: #22c55e;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
             gap: 6px;
+        }
+
+        /* Səs sürəti tənzimləmə paneli */
+        .settings-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: rgba(17, 24, 39, 0.6);
+            padding: 8px 15px;
+            border-radius: 10px;
+            border: 1px solid #374151;
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+        .settings-row input[type="range"] {
+            accent-color: #f59e0b;
+            cursor: pointer;
         }
 
         .close-live-btn {
@@ -252,7 +300,7 @@
             background-color: #dc2626;
         }
 
-        /* Mesaj yazma paneli (Responsive) */
+        /* Mesaj yazma paneli */
         .input-container {
             padding: 12px 15px;
             background-color: #111827;
@@ -314,40 +362,16 @@
             white-space: nowrap;
         }
 
-        /* Mobil ekranlar üçün xüsusi tənzimləmələr */
         @media (max-width: 480px) {
-            header {
-                padding: 10px 12px;
-            }
-            .logo {
-                font-size: 0.95rem;
-            }
-            .status-badge {
-                display: none; /* Çox kiçik ekranlarda statusu gizlədirik ki, yer tutmasın */
-            }
-            .glass-portal {
-                padding: 20px 15px;
-            }
-            .anka-bird-container {
-                width: 100px;
-                height: 100px;
-                margin-bottom: 15px;
-            }
-            .anka-emoji {
-                font-size: 2.8rem;
-            }
-            .live-title {
-                font-size: 1.05rem;
-            }
-            .live-speech-bubble {
-                font-size: 0.9rem;
-                padding: 12px;
-                min-height: 50px;
-            }
-            button.send-btn {
-                padding: 0 12px;
-                font-size: 0.8rem;
-            }
+            header { padding: 10px 12px; }
+            .logo { font-size: 0.95rem; }
+            .status-badge { display: none; }
+            .glass-portal { padding: 20px 15px; }
+            .anka-bird-container { width: 100px; height: 100px; margin-bottom: 12px; }
+            .anka-emoji { font-size: 2.8rem; }
+            .live-title { font-size: 1.05rem; }
+            .live-speech-bubble { font-size: 0.9rem; padding: 12px; min-height: 50px; }
+            button.send-btn { padding: 0 12px; font-size: 0.8rem; }
         }
     </style>
 </head>
@@ -370,28 +394,36 @@
         </div>
     </header>
 
-    <!-- Normal Chat Ekranı -->
     <div class="chat-container" id="chatContainer">
         <div class="message ai-message">
             <div class="message-sender">STORMX AI</div>
-            Salam! Mən STORMX AI-yam. İstər telefonda, istərsə də PC-də LIVE düyməsinə basaraq Anka Qusunun canlı portalını aça bilərsən!
+            Salam! Mən STORMX AI-yam. LIVE düyməsinə basaraq alovlu qığılcımlı və səs dalğalı Anka Qusu portalını aça bilərsən!
         </div>
     </div>
 
-    <!-- LIVE QAPI ŞÜŞƏSİ VƏ ANKA QUSU EKRANI -->
+    <!-- ULTIMATE LIVE PORTAL -->
     <div id="liveOverlay" class="live-overlay" style="display: none;">
-        <div class="glass-portal">
-            <div id="ankaBirdContainer" class="anka-bird-container">
-                <span class="anka-emoji">🦅</span>
+        <div id="glassPortal" class="glass-portal state-listening">
+            <canvas id="portalCanvas"></canvas>
+            <div class="portal-content">
+                <div id="ankaBirdContainer" class="anka-bird-container">
+                    <span class="anka-emoji">🦅</span>
+                </div>
+                <div class="live-title">ANKA QUSU - ULTIMATE LIVE</div>
+                <div id="liveSpeechText" class="live-speech-bubble">
+                    Salam! Mən Anka Qusuyam. Səni dinləyirəm, buyur danış...
+                </div>
+                <div id="micStatusIndicator" class="mic-status-indicator">
+                    🎤 Mikrofon aktivdir, danış və ya əmr ver...
+                </div>
+                <!-- Səs sürəti tənzimləmə paneli -->
+                <div class="settings-row">
+                    <label for="speedRange">Səs Sürəti:</label>
+                    <input type="range" id="speedRange" min="0.7" max="1.4" step="0.1" value="1">
+                    <span id="speedVal">1.0x</span>
+                </div>
+                <button class="close-live-btn" id="closeLiveBtn">LIVE-I BAĞLA</button>
             </div>
-            <div class="live-title">ANKA QUSU - LIVE PORTAL</div>
-            <div id="liveSpeechText" class="live-speech-bubble">
-                Salam! Mən Anka Qusuyam. Səni dinləyirəm, buyur danış...
-            </div>
-            <div id="micStatusIndicator" class="mic-status-indicator">
-                🎤 Mikrofon aktivdir, danışa bilərsən...
-            </div>
-            <button class="close-live-btn" id="closeLiveBtn">LIVE-I BAĞLA</button>
         </div>
     </div>
 
@@ -413,11 +445,15 @@
         const micBtn = document.getElementById('micBtn');
         const liveBtn = document.getElementById('liveBtn');
         const liveOverlay = document.getElementById('liveOverlay');
+        const glassPortal = document.getElementById('glassPortal');
         const closeLiveBtn = document.getElementById('closeLiveBtn');
         const liveSpeechText = document.getElementById('liveSpeechText');
         const micStatusIndicator = document.getElementById('micStatusIndicator');
         const ankaBirdContainer = document.getElementById('ankaBirdContainer');
         const infoText = document.getElementById('infoText');
+        const speedRange = document.getElementById('speedRange');
+        const speedVal = document.getElementById('speedVal');
+        const portalCanvas = document.getElementById('portalCanvas');
 
         let chatHistory = [];
         let selectedImageBase64 = null;
@@ -426,7 +462,92 @@
         let recognition = null;
         let isAiSpeaking = false;
 
-        // Səs tanıma sistemini quraşdırırıq
+        // Səs sürəti tənzimlənməsi
+        speedRange.addEventListener('input', () => {
+            speedVal.textContent = speedRange.value + 'x';
+        });
+
+        // Canvas Alov Qığılcımları və Səs Dalğası Animasiyası
+        const ctx = portalCanvas.getContext('2d');
+        let particles = [];
+        let animationFrameId;
+
+        function resizeCanvas() {
+            portalCanvas.width = glassPortal.offsetWidth;
+            portalCanvas.height = glassPortal.offsetHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * portalCanvas.width;
+                this.y = portalCanvas.height + 10;
+                this.size = Math.random() * 3 + 1;
+                this.speedY = Math.random() * 1.5 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 1;
+                this.color = Math.random() > 0.5 ? '#f59e0b' : '#ef4444';
+                this.alpha = Math.random() * 0.7 + 0.3;
+            }
+            update() {
+                this.y -= this.speedY;
+                this.x += this.speedX;
+                this.alpha -= 0.005;
+                if (this.alpha <= 0 || this.y < 0) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 35; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, portalCanvas.width, portalCanvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // Əgər AI danışırsa və ya dinləyirsə ətrafda səs dalğası dairələri çəkək
+            if (isLiveMode) {
+                const centerX = portalCanvas.width / 2;
+                const centerY = 90; // Anka qusunun mərkəzi
+                const time = Date.now() * 0.003;
+                const radius = 60 + Math.sin(time) * (isAiSpeaking ? 12 : 5);
+
+                ctx.save();
+                ctx.strokeStyle = isAiSpeaking ? 'rgba(239, 68, 68, 0.4)' : 'rgba(245, 158, 11, 0.3)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            animationFrameId = requestAnimationFrame(animateCanvas);
+        }
+
+        // Emosional Rejim Dəyişdirici
+        function setPortalState(state) {
+            glassPortal.className = 'glass-portal state-' + state;
+        }
+
+        // Səs tanıma və Səsli Əmrlər sistemi
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
@@ -439,9 +560,19 @@
                 for (let i = event.resultIndex; i < event.results.length; i++) {
                     transcript += event.results[i][0].transcript;
                 }
+                
+                const lowerTranscript = transcript.toLowerCase().trim();
+
+                // Səsli Əmrlər (Voice Commands)
+                if (lowerTranscript.includes('bağla') || lowerTranscript.includes('dayandır')) {
+                    closeLiveBtn.click();
+                    return;
+                }
+
                 userInput.value = transcript;
                 if (isLiveMode) {
                     liveSpeechText.textContent = `Siz: "${transcript}"`;
+                    setPortalState('thinking');
                 }
             };
 
@@ -464,7 +595,8 @@
                 const langMap = { 'AZ': 'az-AZ', 'EN': 'en-US', 'RU': 'ru-RU' };
                 recognition.lang = langMap[languageSelect.value] || 'az-AZ';
                 recognition.start();
-                if (micStatusIndicator) micStatusIndicator.textContent = '🎤 Mikrofon aktivdir, danışın...';
+                setPortalState('listening');
+                if (micStatusIndicator) micStatusIndicator.textContent = '🎤 Mikrofon aktivdir, danış və ya əmr ver...';
             } catch (e) {}
         }
 
@@ -475,7 +607,6 @@
             } catch (e) {}
         }
 
-        // LIVE Rejimi Açmaq
         liveBtn.addEventListener('click', () => {
             isLiveMode = true;
             chatContainer.innerHTML = '';
@@ -483,14 +614,20 @@
             liveBtn.classList.add('active');
             liveBtn.textContent = '🟢 LIVE AKTİV';
             
+            setTimeout(() => {
+                resizeCanvas();
+                initParticles();
+                animateCanvas();
+            }, 50);
+
             startListening();
             speakText("Salam! Mən Anka Qusuyam. Səni dinləyirəm, buyur danış.");
         });
 
-        // LIVE Rejimi Bağlamaq
         closeLiveBtn.addEventListener('click', () => {
             isLiveMode = false;
             stopListening();
+            cancelAnimationFrame(animationFrameId);
             liveOverlay.style.display = 'none';
             liveBtn.classList.remove('active');
             liveBtn.textContent = '🔴 LIVE';
@@ -506,6 +643,7 @@
             
             isAiSpeaking = true;
             stopListening();
+            setPortalState('speaking');
 
             liveSpeechText.textContent = text;
             if (micStatusIndicator) micStatusIndicator.textContent = '🦅 Anka Qusu danışır...';
@@ -513,6 +651,7 @@
             const utterance = new SpeechSynthesisUtterance(text);
             const langMap = { 'AZ': 'az-AZ', 'EN': 'en-US', 'RU': 'ru-RU' };
             utterance.lang = langMap[languageSelect.value] || 'az-AZ';
+            utterance.rate = parseFloat(speedRange.value) || 1.0;
 
             utterance.onstart = () => {
                 ankaBirdContainer.classList.add('speaking-active');
@@ -530,6 +669,7 @@
             utterance.onerror = () => {
                 ankaBirdContainer.classList.remove('speaking-active');
                 isAiSpeaking = false;
+                setPortalState('error');
                 if (isLiveMode) {
                     startListening();
                 }
@@ -591,6 +731,7 @@
 
             if (isLiveMode) {
                 liveSpeechText.textContent = 'Anka Qusu düşünür... 🤔';
+                setPortalState('thinking');
                 stopListening();
             }
 
@@ -624,6 +765,7 @@
                 const errText = 'Xəta baş verdi. Yenidən cəhd edin.';
                 appendMessageDiv('STORMX AI', errText, 'ai-message');
                 if (isLiveMode) {
+                    setPortalState('error');
                     speakText(errText);
                 }
             }
