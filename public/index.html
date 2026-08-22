@@ -3,539 +3,565 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STORMX AI - Anka Qusu Ultimate Live</title>
+    <title>J.A.R.V.I.S. - STORMX AI HUD Edition</title>
     <style>
         * {
             box-sizing: border-box;
-        }
-        body {
-            background-color: #0b0f19;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+        }
+        body {
+            background-color: #030b0e;
+            color: #00f5ff;
+            font-family: 'Courier New', Courier, monospace;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            height: 100vh;
             overflow: hidden;
+            position: relative;
         }
+
+        /* HUD Çərçivə Küncləri (Sci-Fi Dekorasiya) */
+        .hud-corner {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-color: #00f5ff;
+            border-style: solid;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .tl { top: 10px; left: 10px; border-width: 2px 0 0 2px; }
+        .tr { top: 10px; right: 10px; border-width: 2px 2px 0 0; }
+        .bl { bottom: 10px; left: 10px; border-width: 0 0 2px 2px; }
+        .br { bottom: 10px; right: 10px; border-width: 0 2px 2px 0; }
+
+        /* Top Bar */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 20px;
-            background-color: #111827;
-            border-bottom: 1px solid #1f2937;
+            padding: 12px 25px;
+            border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+            background: rgba(3, 11, 14, 0.9);
             z-index: 10;
         }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .logo {
-            color: #f59e0b;
-            font-weight: bold;
-            font-size: 1.1rem;
+        .system-settings-label {
+            font-size: 0.8rem;
             letter-spacing: 1px;
+            color: #00f5ff;
+            text-transform: uppercase;
         }
-        .header-controls {
+        .jarvis-title-area {
+            text-align: center;
+        }
+        .jarvis-main-title {
+            font-size: 1.6rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: #00f5ff;
+            text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
+        }
+        .jarvis-sub-title {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: #ffb700;
+        }
+        .online-badge {
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-        select {
-            background-color: #1f2937;
-            color: #ffffff;
-            border: 1px solid #374151;
-            padding: 6px 10px;
-            border-radius: 6px;
-            outline: none;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.9rem;
-        }
-        .live-btn {
-            background-color: #1f2937;
-            color: #ef4444;
-            border: 1px solid #374151;
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: bold;
             font-size: 0.85rem;
-            transition: all 0.2s;
-        }
-        .live-btn.active {
-            background-color: #22c55e;
-            color: #ffffff;
-            border-color: #22c55e;
-            box-shadow: 0 0 15px rgba(34, 197, 94, 0.6);
-        }
-        .status-badge {
-            background-color: #1f2937;
-            color: #f59e0b;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            border: 1px solid #374151;
             font-weight: bold;
+            color: #ffb700;
         }
-        .status-dot {
-            width: 7px;
-            height: 7px;
-            background-color: #f59e0b;
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ffb700;
             border-radius: 50%;
+            box-shadow: 0 0 8px #ffb700;
         }
 
-        /* Əsas Chat Ekranı */
-        .chat-container {
+        /* Main Grid Layout */
+        .main-hud-layout {
             flex: 1;
-            overflow-y: auto;
+            display: grid;
+            grid-template-columns: 280px 1fr 340px;
+            gap: 15px;
             padding: 15px;
+            overflow: hidden;
+        }
+
+        /* Left Panel */
+        .left-hud-panel {
             display: flex;
             flex-direction: column;
             gap: 15px;
+            border-right: 1px solid rgba(0, 245, 255, 0.15);
+            padding-right: 15px;
         }
-        .message {
-            max-width: 85%;
-            padding: 12px 16px;
-            border-radius: 12px;
-            line-height: 1.5;
-            word-break: break-word;
-            font-size: 0.95rem;
+        .hud-box {
+            background: rgba(0, 245, 255, 0.03);
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            padding: 12px;
+            border-radius: 4px;
+            position: relative;
         }
-        .ai-message {
-            background-color: #161e2e;
-            color: #e5e7eb;
-            align-self: flex-start;
-            border: 1px solid #1f2937;
-        }
-        .user-message {
-            background-color: #1f2937;
-            color: #ffffff;
-            align-self: flex-end;
-            border: 1px solid #374151;
-        }
-        .message-sender {
+        .hud-box-title {
             font-size: 0.75rem;
-            color: #9ca3af;
-            margin-bottom: 4px;
+            letter-spacing: 1.5px;
+            color: #ffb700;
+            margin-bottom: 8px;
             text-transform: uppercase;
+            border-bottom: 1px dashed rgba(255, 183, 0, 0.3);
+            padding-bottom: 4px;
         }
-        .message img {
-            max-width: 100%;
-            border-radius: 8px;
-            margin-top: 8px;
+        .time-display {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #00f5ff;
+            text-shadow: 0 0 8px rgba(0, 245, 255, 0.4);
+        }
+        .date-display {
+            font-size: 0.8rem;
+            color: #a5f3fc;
+            margin-top: 4px;
+        }
+        .weather-temp {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00f5ff;
+        }
+        .weather-desc {
+            font-size: 0.75rem;
+            color: #a5f3fc;
+            margin-top: 4px;
+            line-height: 1.3;
         }
 
-        /* ULTIMATE LIVE PORTAL */
-        .live-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(11, 15, 25, 0.92);
-            backdrop-filter: blur(14px);
-            z-index: 100;
+        /* System Status Bars */
+        .stat-row {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-            animation: dropFromSky 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            margin-bottom: 4px;
         }
-
-        @keyframes dropFromSky {
-            0% { opacity: 0; transform: translateY(-50px) scale(0.95); }
-            100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        .glass-portal {
+        .stat-bar-bg {
             width: 100%;
-            max-width: 520px;
-            background: linear-gradient(145deg, rgba(31, 41, 55, 0.85), rgba(15, 23, 42, 0.95));
-            border: 2px solid rgba(245, 158, 11, 0.5);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(245, 158, 11, 0.3);
-            border-radius: 24px;
-            padding: 30px 20px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .stat-bar-fill {
+            height: 100%;
+            background: #ffb700;
+            box-shadow: 0 0 6px #ffb700;
+        }
+        .network-speed {
+            font-size: 0.75rem;
+            margin-top: 5px;
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Center Hologram Radar */
+        .center-hud-panel {
             display: flex;
             flex-direction: column;
             align-items: center;
-            text-align: center;
+            justify-content: center;
             position: relative;
-            overflow: hidden;
-            transition: border-color 0.3s, box-shadow 0.3s;
         }
-
-        .glass-portal.state-listening { border-color: #f59e0b; box-shadow: 0 0 35px rgba(245, 158, 11, 0.3); }
-        .glass-portal.state-thinking { border-color: #3b82f6; box-shadow: 0 0 35px rgba(59, 130, 246, 0.4); }
-        .glass-portal.state-speaking { border-color: #ef4444; box-shadow: 0 0 45px rgba(239, 68, 68, 0.5); }
-        .glass-portal.state-error { border-color: #dc2626; box-shadow: 0 0 35px rgba(220, 38, 38, 0.5); }
-
-        #portalCanvas {
+        .radar-container {
+            width: 320px;
+            height: 320px;
+            border-radius: 50%;
+            border: 2px dashed rgba(0, 245, 255, 0.3);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 0 30px rgba(0, 245, 255, 0.1), 0 0 30px rgba(0, 245, 255, 0.1);
+        }
+        .radar-inner {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 183, 0, 0.4);
+            position: relative;
+        }
+        #hudCanvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
+            border-radius: 50%;
             pointer-events: none;
-            z-index: 1;
+        }
+        .radar-core-icon {
+            font-size: 3rem;
+            position: absolute;
+            z-index: 2;
+            animation: pulseCore 2s infinite ease-in-out;
+        }
+        @keyframes pulseCore {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px #ffb700); }
+            50% { transform: scale(1.12); filter: drop-shadow(0 0 15px #ffb700); }
         }
 
-        .portal-content {
-            position: relative;
-            z-index: 2;
-            width: 100%;
+        /* Center Bottom Status & Controls */
+        .center-bottom-area {
+            position: absolute;
+            bottom: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            gap: 10px;
+            width: 100%;
         }
-
-        .anka-bird-container {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(245, 158, 11, 0.3) 0%, rgba(239, 68, 68, 0.2) 70%, transparent 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            margin-bottom: 15px;
-            border: 2px solid #f59e0b;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.5);
-            animation: floatBird 3s ease-in-out infinite;
-        }
-
-        @keyframes floatBird {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-8px); }
-        }
-
-        .anka-emoji {
-            font-size: 3.5rem;
-            transition: transform 0.2s;
-        }
-
-        .anka-bird-container.speaking-active .anka-emoji {
-            animation: talkMouth 0.25s infinite alternate ease-in-out;
-        }
-
-        @keyframes talkMouth {
-            0% { transform: scale(1) rotate(-3deg); }
-            100% { transform: scale(1.18) rotate(3deg); filter: drop-shadow(0 0 12px #ef4444); }
-        }
-
-        .live-title {
-            color: #f59e0b;
-            font-size: 1.2rem;
+        .core-status-text {
+            font-size: 0.85rem;
+            color: #ffb700;
+            letter-spacing: 1px;
             font-weight: bold;
+        }
+        .controls-bar {
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 245, 255, 0.05);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            padding: 6px 15px;
+            border-radius: 6px;
+        }
+        .hud-btn {
+            background: transparent;
+            border: none;
+            color: #00f5ff;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 4px 8px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .hud-btn:hover {
+            color: #ffb700;
+            text-shadow: 0 0 8px #ffb700;
+        }
+        .hud-btn.active-live {
+            color: #22c55e;
+            text-shadow: 0 0 8px #22c55e;
+        }
+        .hud-btn.shutdown-btn {
+            color: #ef4444;
+        }
+
+        /* Right Panel (Conversation & Input) */
+        .right-hud-panel {
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid rgba(0, 245, 255, 0.15);
+            padding-left: 15px;
+            background: rgba(0, 0, 0, 0.2);
+        }
+        .right-panel-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #00f5ff;
+            border-bottom: 1px solid rgba(0, 245, 255, 0.2);
+            padding-bottom: 6px;
             margin-bottom: 10px;
+            text-transform: uppercase;
             letter-spacing: 1px;
         }
-
-        .live-speech-bubble {
-            background-color: rgba(17, 24, 39, 0.95);
-            border: 1px solid #374151;
-            padding: 15px;
-            border-radius: 14px;
-            color: #e5e7eb;
-            font-size: 1rem;
-            min-height: 60px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
-            line-height: 1.4;
+        .right-panel-header span.active-tab {
+            color: #ffb700;
+            border-bottom: 2px solid #ffb700;
         }
-
-        .mic-status-indicator {
-            font-size: 0.85rem;
-            color: #22c55e;
-            font-weight: bold;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .settings-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 20px;
-            background: rgba(17, 24, 39, 0.6);
-            padding: 8px 15px;
-            border-radius: 10px;
-            border: 1px solid #374151;
-            font-size: 0.85rem;
-            color: #9ca3af;
-        }
-        .settings-row input[type="range"] {
-            accent-color: #f59e0b;
-            cursor: pointer;
-        }
-
-        .close-live-btn {
-            background-color: #ef4444;
-            color: #ffffff;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 12px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.95rem;
-            transition: background-color 0.2s;
-        }
-        .close-live-btn:hover {
-            background-color: #dc2626;
-        }
-
-        .input-container {
-            padding: 12px 15px;
-            background-color: #111827;
-            border-top: 1px solid #1f2937;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            z-index: 10;
-        }
-        input[type="text"] {
+        .chat-container {
             flex: 1;
-            background-color: #1f2937;
-            border: 1px solid #374151;
-            padding: 10px 12px;
-            border-radius: 8px;
-            color: #ffffff;
-            outline: none;
-            font-size: 0.95rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-right: 4px;
+            margin-bottom: 10px;
         }
-        input[type="text"]::placeholder {
-            color: #9ca3af;
+        .message {
+            font-size: 0.8rem;
+            line-height: 1.4;
+            padding: 8px 10px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 245, 255, 0.2);
+            background: rgba(0, 245, 255, 0.03);
+            word-break: break-word;
         }
-        .tool-btn {
-            background-color: #1f2937;
-            color: #f59e0b;
-            border: 1px solid #374151;
-            padding: 9px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: background-color 0.2s;
-            flex-shrink: 0;
+        .ai-message {
+            border-color: rgba(0, 245, 255, 0.4);
+            color: #00f5ff;
         }
-        .tool-btn:hover {
-            background-color: #374151;
-        }
-        button.send-btn {
-            background-color: #f59e0b;
-            color: #0b0f19;
-            border: none;
-            padding: 0 18px;
-            height: 40px;
-            border-radius: 8px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            flex-shrink: 0;
-            font-size: 0.9rem;
-        }
-        button.send-btn:hover {
-            background-color: #d97706;
-        }
-        #infoText {
-            font-size: 0.75rem;
-            color: #f59e0b;
-            max-width: 90px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+        .user-message {
+            border-color: rgba(255, 183, 0, 0.4);
+            color: #ffb700;
+            align-self: flex-end;
         }
 
-        @media (max-width: 480px) {
-            header { padding: 10px 12px; }
-            .logo { font-size: 0.95rem; }
-            .status-badge { display: none; }
-            .glass-portal { padding: 20px 15px; }
-            .anka-bird-container { width: 100px; height: 100px; margin-bottom: 12px; }
-            .anka-emoji { font-size: 2.8rem; }
-            .live-title { font-size: 1.05rem; }
-            .live-speech-bubble { font-size: 0.9rem; padding: 12px; min-height: 50px; }
-            button.send-btn { padding: 0 12px; font-size: 0.8rem; }
+        /* Input Bar */
+        .chat-input-area {
+            display: flex;
+            gap: 6px;
+            border-top: 1px solid rgba(0, 245, 255, 0.2);
+            padding-top: 10px;
+        }
+        .chat-input-area input[type="text"] {
+            flex: 1;
+            background: rgba(0, 245, 255, 0.05);
+            border: 1px solid rgba(0, 245, 255, 0.3);
+            color: #00f5ff;
+            padding: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.8rem;
+            outline: none;
+            border-radius: 4px;
+        }
+        .chat-input-area input[type="text"]::placeholder {
+            color: rgba(0, 245, 255, 0.4);
+        }
+        .send-hud-btn {
+            background: rgba(255, 183, 0, 0.15);
+            border: 1px solid #ffb700;
+            color: #ffb700;
+            padding: 0 12px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 0.8rem;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .send-hud-btn:hover {
+            background: #ffb700;
+            color: #030b0e;
+            box-shadow: 0 0 10px #ffb700;
+        }
+
+        /* Footer */
+        footer {
+            padding: 8px 25px;
+            border-top: 1px solid rgba(0, 245, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            color: rgba(0, 245, 255, 0.6);
+            background: rgba(3, 11, 14, 0.9);
+        }
+        .footer-shortcuts {
+            display: flex;
+            gap: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-hud-layout {
+                grid-template-columns: 1fr;
+                overflow-y: auto;
+            }
+            body {
+                overflow: auto;
+                height: auto;
+            }
+            .left-hud-panel, .right-hud-panel {
+                border: none;
+                padding: 0;
+            }
+            .radar-container {
+                width: 240px;
+                height: 240px;
+            }
         }
     </style>
 </head>
 <body>
 
+    <div class="hud-corner tl"></div>
+    <div class="hud-corner tr"></div>
+    <div class="hud-corner bl"></div>
+    <div class="hud-corner br"></div>
+
     <header>
-        <div class="logo-area">
-            <div class="logo">STORMX AI</div>
+        <div class="system-settings-label">SYSTEM SETTINGS<br><span style="color:#ffb700; font-size:0.7rem;">VOICE CORE • Windows</span></div>
+        <div class="jarvis-title-area">
+            <div class="jarvis-main-title">J.A.R.V.I.S.</div>
+            <div class="jarvis-sub-title">Just A Rather Very Intelligent System</div>
         </div>
-        <div class="header-controls">
-            <button id="liveBtn" class="live-btn">🔴 LIVE</button>
-            <select id="languageSelect">
-                <option value="AZ">AZ</option>
-                <option value="EN">EN</option>
-                <option value="RU">RU</option>
-            </select>
-            <div class="status-badge">
-                <div class="status-dot"></div> HAZIR
-            </div>
+        <div class="online-badge">
+            <div class="online-dot"></div> ONLINE
         </div>
     </header>
 
-    <div class="chat-container" id="chatContainer">
-        <div class="message ai-message">
-            <div class="message-sender">STORMX AI</div>
-            Salam! Mən STORMX AI-yam. Sürətli və harf-harf yazı maşını effekti ilə səni gözləyirəm!
-        </div>
-    </div>
+    <div class="main-hud-layout">
+        <!-- Left Panel: Time, Weather, System Status -->
+        <div class="left-hud-panel">
+            <div class="hud-box">
+                <div class="hud-box-title">TIME</div>
+                <div class="time-display" id="liveClock">12:28</div>
+                <div class="date-display" id="liveDate">22 AUGUST 2026<br>SATURDAY</div>
+            </div>
 
-    <!-- ULTIMATE LIVE PORTAL -->
-    <div id="liveOverlay" class="live-overlay" style="display: none;">
-        <div id="glassPortal" class="glass-portal state-listening">
-            <canvas id="portalCanvas"></canvas>
-            <div class="portal-content">
-                <div id="ankaBirdContainer" class="anka-bird-container">
-                    <span class="anka-emoji">🦅</span>
+            <div class="hud-box">
+                <div class="hud-box-title">WEATHER • BAKU</div>
+                <div class="weather-temp">26°C</div>
+                <div class="weather-desc">
+                    • partly cloudy<br>
+                    • hissedilən 28 dərəcə<br>
+                    • nem yüzde 45
                 </div>
-                <div class="live-title">ANKA QUSU - ULTIMATE LIVE</div>
-                <div id="liveSpeechText" class="live-speech-bubble">
-                    Salam! Mən Anka Qusuyam. Səni dinləyirəm, buyur danış...
+            </div>
+
+            <div class="hud-box">
+                <div class="hud-box-title">SYSTEM STATUS</div>
+                <div class="stat-row"><span>UPTIME</span><span>00:00:15</span></div>
+                <div class="stat-row"><span>CPU</span><span>12%</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 12%;"></div></div>
+                <div class="stat-row"><span>RAM</span><span>74%</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 74%;"></div></div>
+                <div class="stat-row"><span>DISK</span><span>57%</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 57%;"></div></div>
+                <div class="stat-row"><span>BATTERY</span><span>82%</span></div>
+                <div class="stat-bar-bg"><div class="stat-bar-fill" style="width: 82%; background:#22c55e;"></div></div>
+                <div class="network-speed">
+                    <span style="color:#22c55e;">▲ 34.2 KB/s</span>
+                    <span style="color:#ef4444;">▼ 18.1 KB/s</span>
                 </div>
-                <div id="micStatusIndicator" class="mic-status-indicator">
-                    🎤 Mikrofon aktivdir, danış və ya əmr ver...
+            </div>
+        </div>
+
+        <!-- Center Panel: Holographic Radar & Core -->
+        <div class="center-hud-panel">
+            <div class="radar-container">
+                <div class="radar-inner"></div>
+                <canvas id="hudCanvas"></canvas>
+                <div class="radar-core-icon" id="coreIcon">🦅</div>
+            </div>
+            
+            <div class="center-bottom-area">
+                <div class="core-status-text" id="coreStatusText">🟡 J.A.R.V.I.S. Hazır. Dinləyirəm...</div>
+                <div class="controls-bar">
+                    <button class="hud-btn" id="liveToggleBtn">🎙️ LIVE</button>
+                    <button class="hud-btn" id="pauseBtn">⏸ PAUSE</button>
+                    <button class="hud-btn" id="camBtn">📷 CAM</button>
+                    <button class="hud-btn shutdown-btn" id="shutdownBtn">SHUTDOWN</button>
                 </div>
-                <div class="settings-row">
-                    <label for="speedRange">Səs Sürəti:</label>
-                    <input type="range" id="speedRange" min="0.7" max="1.4" step="0.1" value="1">
-                    <span id="speedVal">1.0x</span>
+            </div>
+        </div>
+
+        <!-- Right Panel: Conversation & Input -->
+        <div class="right-hud-panel">
+            <div class="right-panel-header">
+                <span class="active-tab">CONVERSATION</span>
+                <span style="color:rgba(0,245,255,0.5);">THINKING</span>
+            </div>
+            <div class="chat-container" id="chatContainer">
+                <div class="message ai-message">
+                    SYS: J.A.R.V.I.S. hazır. Dinləyirəm...
                 </div>
-                <button class="close-live-btn" id="closeLiveBtn">LIVE-I BAĞLA</button>
+            </div>
+            <div class="chat-input-area">
+                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+                <input type="text" id="userInput" placeholder="Əmr yazın və ya səslə deyin...">
+                <button class="send-hud-btn" id="sendBtn">SEND ►</button>
             </div>
         </div>
     </div>
 
-    <div class="input-container">
-        <input type="file" id="imageInput" accept="image/*" style="display: none;">
-        <button class="tool-btn" onclick="document.getElementById('imageInput').click()" title="Şəkil yüklə">📷</button>
-        <button class="tool-btn" id="micBtn" title="Səslə danış">🎤</button>
-        <span id="infoText"></span>
-        <input type="text" id="userInput" placeholder="Mesaj yazın və ya səslə...">
-        <button class="send-btn" id="sendBtn">GÖNDƏR</button>
-    </div>
+    <footer>
+        <div>J.A.R.V.I.S. • Windows Edition • Realtime Voice Core</div>
+        <div class="footer-shortcuts">
+            <span>[F4] MUTE</span>
+            <span>[F5] PAUSE</span>
+            <span>[CAM]</span>
+            <span>[F11] FULLSCREEN</span>
+        </div>
+    </footer>
 
     <script>
+        // Real-time Clock & Date
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('liveClock').innerHTML = `${hours}:${minutes}<span style="font-size:1rem; color:#ffb700;">:${seconds}</span>`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // Canvas Particles & Hologram Radar Animation
+        const hudCanvas = document.getElementById('hudCanvas');
+        const ctx = hudCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeRadarCanvas() {
+            hudCanvas.width = hudCanvas.offsetWidth;
+            hudCanvas.height = hudCanvas.offsetHeight;
+        }
+        resizeRadarCanvas();
+        window.addEventListener('resize', resizeRadarCanvas);
+
+        for (let i = 0; i < 40; i++) {
+            particles.push({
+                x: Math.random() * hudCanvas.width,
+                y: Math.random() * hudCanvas.height,
+                radius: Math.random() * 2 + 0.5,
+                color: Math.random() > 0.4 ? '#00f5ff' : '#ffb700',
+                speedX: (Math.random() - 0.5) * 0.6,
+                speedY: (Math.random() - 0.5) * 0.6
+            });
+        }
+
+        function animateRadar() {
+            ctx.clearRect(0, 0, hudCanvas.width, hudCanvas.height);
+            particles.forEach(p => {
+                p.x += p.speedX;
+                p.y += p.speedY;
+                if (p.x < 0 || p.x > hudCanvas.width) p.speedX *= -1;
+                if (p.y < 0 || p.y > hudCanvas.height) p.speedY *= -1;
+
+                ctx.save();
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            });
+            requestAnimationFrame(animateRadar);
+        }
+        animateRadar();
+
+        // Chat & AI Integration with Typewriter effect
         const chatContainer = document.getElementById('chatContainer');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
-        const languageSelect = document.getElementById('languageSelect');
-        const imageInput = document.getElementById('imageInput');
-        const micBtn = document.getElementById('micBtn');
-        const liveBtn = document.getElementById('liveBtn');
-        const liveOverlay = document.getElementById('liveOverlay');
-        const glassPortal = document.getElementById('glassPortal');
-        const closeLiveBtn = document.getElementById('closeLiveBtn');
-        const liveSpeechText = document.getElementById('liveSpeechText');
-        const micStatusIndicator = document.getElementById('micStatusIndicator');
-        const ankaBirdContainer = document.getElementById('ankaBirdContainer');
-        const infoText = document.getElementById('infoText');
-        const speedRange = document.getElementById('speedRange');
-        const speedVal = document.getElementById('speedVal');
-        const portalCanvas = document.getElementById('portalCanvas');
+        const liveToggleBtn = document.getElementById('liveToggleBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const coreStatusText = document.getElementById('coreStatusText');
+        const coreIcon = document.getElementById('coreIcon');
 
         let chatHistory = [];
-        let selectedImageBase64 = null;
-        let selectedImageMimeType = null;
-        let isLiveMode = false;
+        let isLiveActive = false;
         let recognition = null;
         let isAiSpeaking = false;
 
-        speedRange.addEventListener('input', () => {
-            speedVal.textContent = speedRange.value + 'x';
-        });
-
-        const ctx = portalCanvas.getContext('2d');
-        let particles = [];
-        let animationFrameId;
-
-        function resizeCanvas() {
-            portalCanvas.width = glassPortal.offsetWidth;
-            portalCanvas.height = glassPortal.offsetHeight;
-        }
-
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-            reset() {
-                this.x = Math.random() * portalCanvas.width;
-                this.y = portalCanvas.height + 10;
-                this.size = Math.random() * 3 + 1;
-                this.speedY = Math.random() * 1.5 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 1;
-                this.color = Math.random() > 0.5 ? '#f59e0b' : '#ef4444';
-                this.alpha = Math.random() * 0.7 + 0.3;
-            }
-            update() {
-                this.y -= this.speedY;
-                this.x += this.speedX;
-                this.alpha -= 0.005;
-                if (this.alpha <= 0 || this.y < 0) {
-                    this.reset();
-                }
-            }
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.alpha;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.restore();
-            }
-        }
-
-        function initParticles() {
-            particles = [];
-            for (let i = 0; i < 35; i++) {
-                particles.push(new Particle());
-            }
-        }
-
-        function animateCanvas() {
-            ctx.clearRect(0, 0, portalCanvas.width, portalCanvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
-            });
-
-            if (isLiveMode) {
-                const centerX = portalCanvas.width / 2;
-                const centerY = 90;
-                const time = Date.now() * 0.003;
-                const radius = 60 + Math.sin(time) * (isAiSpeaking ? 12 : 5);
-
-                ctx.save();
-                ctx.strokeStyle = isAiSpeaking ? 'rgba(239, 68, 68, 0.4)' : 'rgba(245, 158, 11, 0.3)';
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-                ctx.stroke();
-                ctx.restore();
-            }
-
-            animationFrameId = requestAnimationFrame(animateCanvas);
-        }
-
-        function setPortalState(state) {
-            glassPortal.className = 'glass-portal state-' + state;
-        }
-
+        // Speech Recognition Setup
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
@@ -548,258 +574,118 @@
                 for (let i = event.resultIndex; i < event.results.length; i++) {
                     transcript += event.results[i][0].transcript;
                 }
-                
-                const lowerTranscript = transcript.toLowerCase().trim();
-                if (lowerTranscript.includes('bağla') || lowerTranscript.includes('dayandır')) {
-                    closeLiveBtn.click();
-                    return;
-                }
-
                 userInput.value = transcript;
-                if (isLiveMode) {
-                    liveSpeechText.textContent = `Siz: "${transcript}"`;
-                    setPortalState('thinking');
-                }
-            };
-
-            recognition.onerror = () => {
-                if (isLiveMode && !isAiSpeaking) {
-                    try { recognition.start(); } catch(e) {}
-                }
-            };
-
-            recognition.onend = () => {
-                if (isLiveMode && !isAiSpeaking) {
-                    try { recognition.start(); } catch(e) {}
+                if (isLiveActive) {
+                    coreStatusText.textContent = `🎙️ Eşidirəm: "${transcript}"`;
                 }
             };
         }
 
-        function startListening() {
-            if (!recognition) return;
-            try {
-                const langMap = { 'AZ': 'az-AZ', 'EN': 'en-US', 'RU': 'ru-RU' };
-                recognition.lang = langMap[languageSelect.value] || 'az-AZ';
-                recognition.start();
-                setPortalState('listening');
-                if (micStatusIndicator) micStatusIndicator.textContent = '🎤 Mikrofon aktivdir, danış və ya əmr ver...';
-            } catch (e) {}
-        }
-
-        function stopListening() {
-            if (!recognition) return;
-            try {
-                recognition.stop();
-            } catch (e) {}
-        }
-
-        liveBtn.addEventListener('click', () => {
-            isLiveMode = true;
-            chatContainer.innerHTML = '';
-            liveOverlay.style.display = 'flex';
-            liveBtn.classList.add('active');
-            liveBtn.textContent = '🟢 LIVE AKTİV';
-            
-            setTimeout(() => {
-                resizeCanvas();
-                initParticles();
-                animateCanvas();
-            }, 50);
-
-            startListening();
-            speakText("Salam! Mən Anka Qusuyam. Səni dinləyirəm, buyur danış.");
-        });
-
-        closeLiveBtn.addEventListener('click', () => {
-            isLiveMode = false;
-            stopListening();
-            cancelAnimationFrame(animationFrameId);
-            liveOverlay.style.display = 'none';
-            liveBtn.classList.remove('active');
-            liveBtn.textContent = '🔴 LIVE';
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
+        liveToggleBtn.addEventListener('click', () => {
+            isLiveActive = !isLiveActive;
+            if (isLiveActive) {
+                liveToggleBtn.classList.add('active-live');
+                liveToggleBtn.textContent = '🟢 LIVE AKTİV';
+                coreStatusText.textContent = '🟢 Səsli Rejim Aktivdir. Danışın...';
+                if (recognition) {
+                    try { recognition.start(); } catch(e){}
+                }
+                speakJarvis("J.A.R.V.I.S. səsli rejim aktivdir. Səni dinləyirəm, buyur əmr ver.");
+            } else {
+                liveToggleBtn.classList.remove('active-live');
+                liveToggleBtn.textContent = '🎙️ LIVE';
+                coreStatusText.textContent = '🟡 J.A.R.V.I.S. Hazır. Dinləyirəm...';
+                if (recognition) { try { recognition.stop(); } catch(e){} }
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
             }
-            ankaBirdContainer.classList.remove('speaking-active');
         });
 
-        function speakText(text) {
+        pauseBtn.addEventListener('click', () => {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            isAiSpeaking = false;
+            coreStatusText.textContent = '⏸ Sistem dayandırıldı.';
+        });
+
+        function speakJarvis(text) {
             if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
-            
             isAiSpeaking = true;
-            stopListening();
-            setPortalState('speaking');
-
-            liveSpeechText.textContent = text;
-            if (micStatusIndicator) micStatusIndicator.textContent = '🦅 Anka Qusu danışır...';
+            coreStatusText.textContent = '🔊 J.A.R.V.I.S. danışır...';
 
             const utterance = new SpeechSynthesisUtterance(text);
-            const langMap = { 'AZ': 'az-AZ', 'EN': 'en-US', 'RU': 'ru-RU' };
-            utterance.lang = langMap[languageSelect.value] || 'az-AZ';
-            utterance.rate = parseFloat(speedRange.value) || 1.0;
-
-            utterance.onstart = () => {
-                ankaBirdContainer.classList.add('speaking-active');
-            };
-
+            utterance.lang = 'az-AZ';
             utterance.onend = () => {
-                ankaBirdContainer.classList.remove('speaking-active');
                 isAiSpeaking = false;
-                if (isLiveMode) {
-                    userInput.value = '';
-                    startListening();
-                }
+                if (isLiveActive) coreStatusText.textContent = '🟢 Səsli Rejim Aktivdir...';
             };
-
-            utterance.onerror = () => {
-                ankaBirdContainer.classList.remove('speaking-active');
-                isAiSpeaking = false;
-                setPortalState('error');
-                if (isLiveMode) {
-                    startListening();
-                }
-            };
-
             window.speechSynthesis.speak(utterance);
         }
 
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                infoText.textContent = `📎 ${file.name}`;
-                const reader = new FileReader();
-                reader.onload = function(uploadEvent) {
-                    selectedImageBase64 = uploadEvent.target.result.split(',')[1];
-                    selectedImageMimeType = file.type;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-        if (micBtn && recognition) {
-            micBtn.addEventListener('click', () => {
-                startListening();
-                infoText.textContent = '🎤 Dinlənilir...';
-            });
-        }
-
-        async function sendMessage() {
+        async function sendJarvisMessage() {
             const text = userInput.value.trim();
-            if (!text && !selectedImageBase64) return;
+            if (!text) return;
 
-            let userParts = [];
-            if (text) {
-                userParts.push({ text: text });
-            }
-            if (selectedImageBase64) {
-                userParts.push({
-                    inlineData: {
-                        mimeType: selectedImageMimeType,
-                        data: selectedImageBase64
-                    }
-                });
-            }
-
-            let displayHtml = text ? escapeHtml(text) : '';
-            if (selectedImageBase64) {
-                displayHtml += `<br><img src="data:${selectedImageMimeType};base64,${selectedImageBase64}" />`;
-            }
-
-            appendMessageDiv('Siz', displayHtml, 'user-message');
-            chatHistory.push({ role: "user", parts: userParts });
-
+            appendMessageDiv('Siz: ' + text, 'user-message');
+            chatHistory.push({ role: "user", parts: [{ text: text }] });
             userInput.value = '';
-            selectedImageBase64 = null;
-            selectedImageMimeType = null;
-            imageInput.value = '';
-            infoText.textContent = '';
-
-            if (isLiveMode) {
-                liveSpeechText.textContent = 'Anka Qusu düşünür... 🤔';
-                setPortalState('thinking');
-                stopListening();
-            }
+            coreStatusText.textContent = '⚙️ J.A.R.V.I.S. düşünür...';
 
             try {
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        contents: chatHistory,
-                        language: languageSelect.value 
-                    })
+                    body: JSON.stringify({ contents: chatHistory, language: 'AZ' })
                 });
 
                 const data = await response.json();
+                const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Xəta baş verdi.";
 
-                if (!response.ok) {
-                    throw new Error(data.error?.message || 'Xəta baş verdi.');
-                }
+                appendTypewriterMessage('J.A.R.V.I.S: ' + aiText, 'ai-message');
+                chatHistory.push({ role: "model", parts: [{ text: aiText }] });
 
-                const aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Xəta baş verdi.";
-                
-                // Harf-harf yazı maşını effekti ilə mesajı əlavə edirik
-                appendTypewriterMessage('STORMX AI', aiResponseText, 'ai-message');
-                chatHistory.push({ role: "model", parts: [{ text: aiResponseText }] });
-
-                if (isLiveMode) {
-                    speakText(aiResponseText);
+                if (isLiveActive) {
+                    speakJarvis(aiText);
+                } else {
+                    coreStatusText.textContent = '🟡 J.A.R.V.I.S. Hazır. Dinləyirəm...';
                 }
 
             } catch (err) {
                 chatHistory.pop();
-                const errText = 'Xəta baş verdi. Yenidən cəhd edin.';
-                appendTypewriterMessage('STORMX AI', errText, 'ai-message');
-                if (isLiveMode) {
-                    setPortalState('error');
-                    speakText(errText);
-                }
+                appendMessageDiv('J.A.R.V.I.S: Bağlantı xətası baş verdi.', 'ai-message');
+                coreStatusText.textContent = '🔴 Xəta!';
             }
         }
 
-        function appendMessageDiv(sender, htmlContent, className) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${className}`;
-            msgDiv.innerHTML = `<div class="message-sender">${sender}</div>${htmlContent}`;
-            chatContainer.appendChild(msgDiv);
+        function appendMessageDiv(fullText, className) {
+            const msg = document.createElement('div');
+            msg.className = `message ${className}`;
+            msg.textContent = fullText;
+            chatContainer.appendChild(msg);
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Yazı maşını (Typewriter) effekti funksiyası
-        function appendTypewriterMessage(sender, text, className) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${className}`;
-            msgDiv.innerHTML = `<div class="message-sender">${sender}</div><span class="text-content"></span>`;
-            chatContainer.appendChild(msgDiv);
-            
-            const textSpan = msgDiv.querySelector('.text-content');
-            let i = 0;
-            const speed = 15; // Hər hərfin yazılma sürəti (milisaniyə)
+        // Harf-harf yazı maşını effekti (Typewriter)
+        function appendTypewriterMessage(fullText, className) {
+            const msg = document.createElement('div');
+            msg.className = `message ${className}`;
+            chatContainer.appendChild(msg);
 
-            function typeWriter() {
-                if (i < text.length) {
-                    textSpan.textContent += text.charAt(i);
+            let i = 0;
+            const speed = 12; // Sürətli harf-harf yazılma
+            function type() {
+                if (i < fullText.length) {
+                    msg.textContent += fullText.charAt(i);
                     i++;
                     chatContainer.scrollTop = chatContainer.scrollHeight;
-                    setTimeout(typeWriter, speed);
+                    setTimeout(type, speed);
                 }
             }
-            typeWriter();
+            type();
         }
 
-        function escapeHtml(text) {
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;");
-        }
-
-        sendBtn.addEventListener('click', sendMessage);
+        sendBtn.addEventListener('click', sendJarvisMessage);
         userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+            if (e.key === 'Enter') sendJarvisMessage();
         });
     </script>
 </body>
