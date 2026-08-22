@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>J.A.R.V.I.S. - STORMX AI HUD Edition</title>
+    <title>STORMX AI - HUD Edition</title>
     <style>
         * {
             box-sizing: border-box;
@@ -21,7 +21,7 @@
             position: relative;
         }
 
-        /* HUD Çərçivə Küncləri (Sci-Fi Dekorasiya) */
+        /* HUD Çərçivə Küncləri */
         .hud-corner {
             position: absolute;
             width: 10px;
@@ -52,17 +52,17 @@
             color: #00f5ff;
             text-transform: uppercase;
         }
-        .jarvis-title-area {
+        .stormx-title-area {
             text-align: center;
         }
-        .jarvis-main-title {
+        .stormx-main-title {
             font-size: 1.6rem;
             font-weight: bold;
             letter-spacing: 4px;
             color: #00f5ff;
             text-shadow: 0 0 10px rgba(0, 245, 255, 0.5);
         }
-        .jarvis-sub-title {
+        .stormx-sub-title {
             font-size: 0.7rem;
             letter-spacing: 2px;
             color: #ffb700;
@@ -263,7 +263,7 @@
             color: #ef4444;
         }
 
-        /* Right Panel (Conversation & Input) */
+        /* Right Panel */
         .right-hud-panel {
             display: flex;
             flex-direction: column;
@@ -369,7 +369,6 @@
             gap: 15px;
         }
 
-        /* Responsive */
         @media (max-width: 900px) {
             .main-hud-layout {
                 grid-template-columns: 1fr;
@@ -399,9 +398,9 @@
 
     <header>
         <div class="system-settings-label">SYSTEM SETTINGS<br><span style="color:#ffb700; font-size:0.7rem;">VOICE CORE • Windows</span></div>
-        <div class="jarvis-title-area">
-            <div class="jarvis-main-title">J.A.R.V.I.S.</div>
-            <div class="jarvis-sub-title">Just A Rather Very Intelligent System</div>
+        <div class="stormx-title-area">
+            <div class="stormx-main-title">STORMX AI</div>
+            <div class="stormx-sub-title">Advanced Neural Intelligence System</div>
         </div>
         <div class="online-badge">
             <div class="online-dot"></div> ONLINE
@@ -409,7 +408,7 @@
     </header>
 
     <div class="main-hud-layout">
-        <!-- Left Panel: Time, Weather, System Status -->
+        <!-- Left Panel -->
         <div class="left-hud-panel">
             <div class="hud-box">
                 <div class="hud-box-title">TIME</div>
@@ -445,16 +444,16 @@
             </div>
         </div>
 
-        <!-- Center Panel: Holographic Radar & Core -->
+        <!-- Center Panel -->
         <div class="center-hud-panel">
             <div class="radar-container">
                 <div class="radar-inner"></div>
                 <canvas id="hudCanvas"></canvas>
-                <div class="radar-core-icon" id="coreIcon">🦅</div>
+                <div class="radar-core-icon" id="coreIcon">⚡</div>
             </div>
             
             <div class="center-bottom-area">
-                <div class="core-status-text" id="coreStatusText">🟡 J.A.R.V.I.S. Hazır. Dinləyirəm...</div>
+                <div class="core-status-text" id="coreStatusText">🟡 STORMX AI Hazır. Dinləyirəm...</div>
                 <div class="controls-bar">
                     <button class="hud-btn" id="liveToggleBtn">🎙️ LIVE</button>
                     <button class="hud-btn" id="pauseBtn">⏸ PAUSE</button>
@@ -464,7 +463,7 @@
             </div>
         </div>
 
-        <!-- Right Panel: Conversation & Input -->
+        <!-- Right Panel -->
         <div class="right-hud-panel">
             <div class="right-panel-header">
                 <span class="active-tab">CONVERSATION</span>
@@ -472,7 +471,7 @@
             </div>
             <div class="chat-container" id="chatContainer">
                 <div class="message ai-message">
-                    SYS: J.A.R.V.I.S. hazır. Dinləyirəm...
+                    SYS: STORMX AI hazır. Dinləyirəm...
                 </div>
             </div>
             <div class="chat-input-area">
@@ -484,7 +483,7 @@
     </div>
 
     <footer>
-        <div>J.A.R.V.I.S. • Windows Edition • Realtime Voice Core</div>
+        <div>STORMX AI • Windows Edition • Realtime Voice Core</div>
         <div class="footer-shortcuts">
             <span>[F4] MUTE</span>
             <span>[F5] PAUSE</span>
@@ -494,7 +493,6 @@
     </footer>
 
     <script>
-        // Real-time Clock & Date
         function updateClock() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -505,7 +503,6 @@
         setInterval(updateClock, 1000);
         updateClock();
 
-        // Canvas Particles & Hologram Radar Animation
         const hudCanvas = document.getElementById('hudCanvas');
         const ctx = hudCanvas.getContext('2d');
         let particles = [];
@@ -547,21 +544,18 @@
         }
         animateRadar();
 
-        // Chat & AI Integration with Typewriter effect
         const chatContainer = document.getElementById('chatContainer');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         const liveToggleBtn = document.getElementById('liveToggleBtn');
         const pauseBtn = document.getElementById('pauseBtn');
         const coreStatusText = document.getElementById('coreStatusText');
-        const coreIcon = document.getElementById('coreIcon');
 
         let chatHistory = [];
         let isLiveActive = false;
         let recognition = null;
         let isAiSpeaking = false;
 
-        // Speech Recognition Setup
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
@@ -590,11 +584,11 @@
                 if (recognition) {
                     try { recognition.start(); } catch(e){}
                 }
-                speakJarvis("J.A.R.V.I.S. səsli rejim aktivdir. Səni dinləyirəm, buyur əmr ver.");
+                speakStormX("STORMX AI səsli rejim aktivdir. Səni dinləyirəm, buyur əmr ver.");
             } else {
                 liveToggleBtn.classList.remove('active-live');
                 liveToggleBtn.textContent = '🎙️ LIVE';
-                coreStatusText.textContent = '🟡 J.A.R.V.I.S. Hazır. Dinləyirəm...';
+                coreStatusText.textContent = '🟡 STORMX AI Hazır. Dinləyirəm...';
                 if (recognition) { try { recognition.stop(); } catch(e){} }
                 if ('speechSynthesis' in window) window.speechSynthesis.cancel();
             }
@@ -606,11 +600,11 @@
             coreStatusText.textContent = '⏸ Sistem dayandırıldı.';
         });
 
-        function speakJarvis(text) {
+        function speakStormX(text) {
             if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
             isAiSpeaking = true;
-            coreStatusText.textContent = '🔊 J.A.R.V.I.S. danışır...';
+            coreStatusText.textContent = '🔊 STORMX AI danışır...';
 
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'az-AZ';
@@ -621,14 +615,14 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        async function sendJarvisMessage() {
+        async function sendStormXMessage() {
             const text = userInput.value.trim();
             if (!text) return;
 
             appendMessageDiv('Siz: ' + text, 'user-message');
             chatHistory.push({ role: "user", parts: [{ text: text }] });
             userInput.value = '';
-            coreStatusText.textContent = '⚙️ J.A.R.V.I.S. düşünür...';
+            coreStatusText.textContent = '⚙️ STORMX AI düşünür...';
 
             try {
                 const response = await fetch('/api/chat', {
@@ -640,18 +634,18 @@
                 const data = await response.json();
                 const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Xəta baş verdi.";
 
-                appendTypewriterMessage('J.A.R.V.I.S: ' + aiText, 'ai-message');
+                appendTypewriterMessage('STORMX AI: ' + aiText, 'ai-message');
                 chatHistory.push({ role: "model", parts: [{ text: aiText }] });
 
                 if (isLiveActive) {
-                    speakJarvis(aiText);
+                    speakStormX(aiText);
                 } else {
-                    coreStatusText.textContent = '🟡 J.A.R.V.I.S. Hazır. Dinləyirəm...';
+                    coreStatusText.textContent = '🟡 STORMX AI Hazır. Dinləyirəm...';
                 }
 
             } catch (err) {
                 chatHistory.pop();
-                appendMessageDiv('J.A.R.V.I.S: Bağlantı xətası baş verdi.', 'ai-message');
+                appendMessageDiv('STORMX AI: Bağlantı xətası baş verdi.', 'ai-message');
                 coreStatusText.textContent = '🔴 Xəta!';
             }
         }
@@ -671,7 +665,7 @@
             chatContainer.appendChild(msg);
 
             let i = 0;
-            const speed = 12; // Sürətli harf-harf yazılma
+            const speed = 12; 
             function type() {
                 if (i < fullText.length) {
                     msg.textContent += fullText.charAt(i);
@@ -683,9 +677,9 @@
             type();
         }
 
-        sendBtn.addEventListener('click', sendJarvisMessage);
+        sendBtn.addEventListener('click', sendStormXMessage);
         userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendJarvisMessage();
+            if (e.key === 'Enter') sendStormXMessage();
         });
     </script>
 </body>
