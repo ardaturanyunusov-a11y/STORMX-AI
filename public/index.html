@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STORMX AI - HUD Edition</title>
+    <title>BUTA AI - HUD Edition</title>
     <style>
         * {
             box-sizing: border-box;
@@ -399,7 +399,7 @@
     <header>
         <div class="system-settings-label">SYSTEM SETTINGS<br><span style="color:#ffb700; font-size:0.7rem;">VOICE CORE • Windows</span></div>
         <div class="stormx-title-area">
-            <div class="stormx-main-title">STORMX AI</div>
+            <div class="stormx-main-title">BUTA AI</div>
             <div class="stormx-sub-title">Advanced Neural Intelligence System</div>
         </div>
         <div class="online-badge">
@@ -408,7 +408,6 @@
     </header>
 
     <div class="main-hud-layout">
-        <!-- Left Panel -->
         <div class="left-hud-panel">
             <div class="hud-box">
                 <div class="hud-box-title">TIME</div>
@@ -444,7 +443,6 @@
             </div>
         </div>
 
-        <!-- Center Panel -->
         <div class="center-hud-panel">
             <div class="radar-container">
                 <div class="radar-inner"></div>
@@ -453,7 +451,7 @@
             </div>
             
             <div class="center-bottom-area">
-                <div class="core-status-text" id="coreStatusText">🟡 STORMX AI Hazır. Dinləyirəm...</div>
+                <div class="core-status-text" id="coreStatusText">🟡 BUTA AI Hazır. Dinləyirəm...</div>
                 <div class="controls-bar">
                     <button class="hud-btn" id="liveToggleBtn">🎙️ LIVE</button>
                     <button class="hud-btn" id="pauseBtn">⏸ PAUSE</button>
@@ -463,7 +461,6 @@
             </div>
         </div>
 
-        <!-- Right Panel -->
         <div class="right-hud-panel">
             <div class="right-panel-header">
                 <span class="active-tab">CONVERSATION</span>
@@ -471,7 +468,7 @@
             </div>
             <div class="chat-container" id="chatContainer">
                 <div class="message ai-message">
-                    SYS: STORMX AI hazır. Dinləyirəm...
+                    SYS: BUTA AI hazır. Dinləyirəm...
                 </div>
             </div>
             <div class="chat-input-area">
@@ -483,7 +480,7 @@
     </div>
 
     <footer>
-        <div>STORMX AI • Windows Edition • Realtime Voice Core</div>
+        <div>BUTA AI • Windows Edition • Realtime Voice Core</div>
         <div class="footer-shortcuts">
             <span>[F4] MUTE</span>
             <span>[F5] PAUSE</span>
@@ -584,11 +581,11 @@
                 if (recognition) {
                     try { recognition.start(); } catch(e){}
                 }
-                speakStormX("STORMX AI səsli rejim aktivdir. Səni dinləyirəm, buyur əmr ver.");
+                speakButaAI("BUTA AI səsli rejim aktivdir. Səni dinləyirəm, buyur əmr ver.");
             } else {
                 liveToggleBtn.classList.remove('active-live');
                 liveToggleBtn.textContent = '🎙️ LIVE';
-                coreStatusText.textContent = '🟡 STORMX AI Hazır. Dinləyirəm...';
+                coreStatusText.textContent = '🟡 BUTA AI Hazır. Dinləyirəm...';
                 if (recognition) { try { recognition.stop(); } catch(e){} }
                 if ('speechSynthesis' in window) window.speechSynthesis.cancel();
             }
@@ -600,11 +597,11 @@
             coreStatusText.textContent = '⏸ Sistem dayandırıldı.';
         });
 
-        function speakStormX(text) {
+        function speakButaAI(text) {
             if (!('speechSynthesis' in window)) return;
             window.speechSynthesis.cancel();
             isAiSpeaking = true;
-            coreStatusText.textContent = '🔊 STORMX AI danışır...';
+            coreStatusText.textContent = '🔊 BUTA AI danışır...';
 
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'az-AZ';
@@ -615,14 +612,14 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        async function sendStormXMessage() {
+        async function sendButaAIMessage() {
             const text = userInput.value.trim();
             if (!text) return;
 
             appendMessageDiv('Siz: ' + text, 'user-message');
             chatHistory.push({ role: "user", parts: [{ text: text }] });
             userInput.value = '';
-            coreStatusText.textContent = '⚙️ STORMX AI düşünür...';
+            coreStatusText.textContent = '⚙️ BUTA AI düşünür...';
 
             try {
                 const response = await fetch('/api/chat', {
@@ -634,18 +631,18 @@
                 const data = await response.json();
                 const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Xəta baş verdi.";
 
-                appendTypewriterMessage('STORMX AI: ' + aiText, 'ai-message');
+                appendTypewriterMessage('BUTA AI: ' + aiText, 'ai-message');
                 chatHistory.push({ role: "model", parts: [{ text: aiText }] });
 
                 if (isLiveActive) {
-                    speakStormX(aiText);
+                    speakButaAI(aiText);
                 } else {
-                    coreStatusText.textContent = '🟡 STORMX AI Hazır. Dinləyirəm...';
+                    coreStatusText.textContent = '🟡 BUTA AI Hazır. Dinləyirəm...';
                 }
 
             } catch (err) {
                 chatHistory.pop();
-                appendMessageDiv('STORMX AI: Bağlantı xətası baş verdi.', 'ai-message');
+                appendMessageDiv('BUTA AI: Bağlantı xətası baş verdi.', 'ai-message');
                 coreStatusText.textContent = '🔴 Xəta!';
             }
         }
@@ -658,7 +655,6 @@
             chatContainer.scrollTop = chatContainer.scrollHeight;
         }
 
-        // Harf-harf yazı maşını effekti (Typewriter)
         function appendTypewriterMessage(fullText, className) {
             const msg = document.createElement('div');
             msg.className = `message ${className}`;
@@ -677,9 +673,9 @@
             type();
         }
 
-        sendBtn.addEventListener('click', sendStormXMessage);
+        sendBtn.addEventListener('click', sendButaAIMessage);
         userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendStormXMessage();
+            if (e.key === 'Enter') sendButaAIMessage();
         });
     </script>
 </body>
