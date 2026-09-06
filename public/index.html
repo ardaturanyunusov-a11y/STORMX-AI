@@ -31,7 +31,31 @@
             align-items: center;
             border-bottom: 1px solid rgba(255, 170, 0, 0.2);
             padding-bottom: 10px;
+            position: relative;
+            overflow: hidden;
         }
+
+        /* Arxa fondakı Solo Studio yazısı (Watermark) */
+        .header-bg-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: rgba(255, 170, 0, 0.05);
+            letter-spacing: 12px;
+            z-index: 0;
+            pointer-events: none;
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+
+        .header-left, .header-center, .header-right {
+            position: relative;
+            z-index: 1;
+        }
+
         .header-left {
             font-size: 0.75rem;
             letter-spacing: 1px;
@@ -311,6 +335,9 @@
 
     <!-- Header -->
     <header>
+        <!-- Arxa fondakı su nişanı (Watermark) -->
+        <div class="header-bg-watermark">SOLO STUDIO</div>
+
         <div class="header-left">
             SYSTEM SETTINGS<br>
             <span style="color: #ffaa00;">VOICE CORE • WINDOWS</span>
@@ -587,7 +614,7 @@
             outputBox.innerHTML += `<br><br><b>SYS:</b> Sistem söndürüldü.`;
         });
 
-        // Improved AI Command Processor
+        // AI Command Processor with Solo Studio check
         async function processCommand(text) {
             if (!isOnline) return;
             
@@ -598,7 +625,9 @@
             let reply = "";
             const query = text.toLowerCase();
 
-            if (query.includes('necəsən') || query.includes('salam')) {
+            if (query.includes('sayt düzəlt') || query.includes('sayt yarat') || query.includes('kod yaz')) {
+                reply = "Mən hələlik birbaşa sayt düzəldə bilmirəm, amma siz Solo Studio-ya dəstək verərək gələcəkdə onu da edə bilərəm!";
+            } else if (query.includes('necəsən') || query.includes('salam')) {
                 reply = "Salam! Mən BUTA AI sistemiyəm. Bütün neyron strukturlar aktivdir, sizə necə kömək edə bilərəm?";
             } else if (query.includes('adın nədir')) {
                 reply = "Mən BUTA AI - Qabaqcıl Neyron İntellekt Sistemiyəm.";
@@ -606,7 +635,6 @@
                 reply = `Analiz tamamlandı. "${text}" üzrə əmr sistemi tərəfindən icra olundu.`;
             }
 
-            // Replace the "Düşünülür..." line with actual reply
             outputBox.innerHTML = outputBox.innerHTML.replace('<b>SYS:</b> Düşünülür...', `<b>SYS:</b> ${reply}`);
             outputBox.scrollTop = outputBox.scrollHeight;
             statusMessage.innerText = `🟢 Hazır. Dinləyirəm...`;
