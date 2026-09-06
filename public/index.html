@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STORMX AI - Full HUD & Voice Interface</title>
+    <title>STORMX AI - HUD Interface</title>
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -16,39 +16,36 @@
             font-family: 'Courier New', Courier, monospace;
             height: 100vh;
             overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 15px;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            grid-template-columns: 280px 1fr;
+            gap: 15px;
+            padding: 20px;
             background-image: 
-                radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.05) 0%, rgba(3, 7, 18, 0.95) 100%),
-                linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+                radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.04) 0%, rgba(3, 7, 18, 0.96) 100%),
+                linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px);
             background-size: 100% 100%, 20px 20px, 20px 20px;
         }
+
+        /* Header */
         header {
+            grid-column: 1 / -1;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid rgba(0, 255, 204, 0.4);
+            border-bottom: 2px solid rgba(0, 255, 204, 0.3);
             padding-bottom: 12px;
-            background: rgba(3, 7, 18, 0.8);
-        }
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 15px;
         }
         .logo {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: bold;
-            letter-spacing: 3px;
-            text-shadow: 0 0 12px rgba(0, 255, 204, 0.6);
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
         }
-        .system-status {
+        .header-badges {
             display: flex;
-            gap: 10px;
-            align-items: center;
+            gap: 15px;
         }
         .status-badge {
             font-size: 0.8rem;
@@ -59,16 +56,10 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        .main-container {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            gap: 20px;
-            flex: 1;
-            margin: 15px 0;
-            overflow: hidden;
-        }
-        .sidebar {
-            background: rgba(0, 15, 30, 0.5);
+
+        /* Sidebar */
+        aside {
+            background: rgba(0, 15, 30, 0.4);
             border: 1px solid rgba(0, 255, 204, 0.3);
             border-radius: 8px;
             padding: 15px;
@@ -77,10 +68,10 @@
             gap: 15px;
         }
         .sidebar-title {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             border-bottom: 1px dashed rgba(0, 255, 204, 0.3);
-            padding-bottom: 5px;
+            padding-bottom: 6px;
             letter-spacing: 1px;
             color: #79ffe1;
         }
@@ -91,52 +82,56 @@
             border-radius: 5px;
         }
         .metric-label {
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             color: rgba(0, 255, 204, 0.7);
         }
         .metric-value {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             margin-top: 4px;
         }
-        .hud-workspace {
-            display: flex;
-            flex-direction: column;
-            background: rgba(0, 10, 20, 0.6);
+
+        /* Main HUD Workspace */
+        main {
+            background: rgba(0, 10, 20, 0.5);
             border: 1px solid rgba(0, 255, 204, 0.4);
             border-radius: 8px;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             position: relative;
             overflow: hidden;
             box-shadow: inset 0 0 25px rgba(0, 255, 204, 0.05);
         }
+
         .visualizer-container {
             display: flex;
-            align-items: center;
             justify-content: center;
-            margin-bottom: 15px;
+            align-items: center;
+            margin-bottom: 10px;
         }
         .visualizer {
-            width: 130px;
-            height: 130px;
+            width: 110px;
+            height: 110px;
             border: 3px dashed rgba(0, 255, 204, 0.4);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            animation: rotate 12s linear infinite;
+            animation: rotate 10s linear infinite;
         }
         .visualizer-inner {
-            width: 95px;
-            height: 95px;
+            width: 80px;
+            height: 80px;
             background: rgba(0, 255, 204, 0.1);
             border-radius: 50%;
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: bold;
             letter-spacing: 2px;
             transition: background 0.3s ease;
@@ -145,41 +140,26 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .chat-history {
-            flex: 1;
+
+        .output-box {
+            width: 100%;
+            height: 140px;
             background: rgba(0, 5, 12, 0.7);
-            border: 1px solid rgba(0, 255, 204, 0.25);
+            border: 1px solid rgba(0, 255, 204, 0.4);
             border-radius: 6px;
             padding: 15px;
             overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
-        }
-        .message {
-            padding: 10px 14px;
-            border-radius: 6px;
-            max-width: 80%;
             font-size: 0.95rem;
             line-height: 1.4;
-        }
-        .message.user {
-            background: rgba(0, 255, 204, 0.1);
-            border-left: 3px solid #00ffcc;
-            align-self: flex-end;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+            margin-bottom: 15px;
             color: #e0fbfc;
         }
-        .message.ai {
-            background: rgba(0, 100, 100, 0.15);
-            border-left: 3px solid #00b4d8;
-            align-self: flex-start;
-            color: #00ffcc;
-        }
-        .input-panel {
+
+        .control-panel {
             display: flex;
-            gap: 10px;
+            gap: 12px;
+            align-items: center;
         }
         .chat-input {
             flex: 1;
@@ -201,7 +181,7 @@
             background: rgba(0, 255, 204, 0.15);
             color: #00ffcc;
             border: 1px solid #00ffcc;
-            padding: 0 20px;
+            padding: 12px 20px;
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
             border-radius: 5px;
@@ -209,10 +189,7 @@
             transition: all 0.3s ease;
             text-transform: uppercase;
             box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            letter-spacing: 1px;
         }
         .hud-btn:hover {
             background: rgba(0, 255, 204, 0.35);
@@ -224,7 +201,10 @@
             color: #fff;
             box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
         }
+
+        /* Footer */
         footer {
+            grid-column: 1 / -1;
             display: flex;
             justify-content: space-between;
             font-size: 0.75rem;
@@ -237,57 +217,52 @@
 <body>
 
     <header>
-        <div class="logo-area">
-            <div class="logo">STORMX // AI</div>
-            <div class="status-badge" id="statusBadge">Sistem Hazırdır</div>
-        </div>
-        <div class="system-status">
-            <div class="status-badge">API: Connected</div>
+        <div class="logo">STORMX // AI</div>
+        <div class="status-badge" id="statusBadge">SİSTEM HAZIRDIR</div>
+        <div class="header-badges">
+            <div class="status-badge">API: CONNECTED</div>
             <div class="status-badge">SECURE_HUD_V2</div>
         </div>
     </header>
 
-    <div class="main-container">
-        <!-- Sol Panel (Statistika və Modullar) -->
-        <div class="sidebar">
-            <div class="sidebar-title">Sistem Modulları</div>
-            <div class="metric-card">
-                <div class="metric-label">REACTIVE ENGINE</div>
-                <div class="metric-value" style="color: #00ffcc;">AKTİV</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-label">SES TANINMA (AZ)</div>
-                <div class="metric-value" id="micStatusIndicator" style="color: #ff0055;">GÖZLƏYİR</div>
-            </div>
-            <div class="metric-card">
-                <div class="metric-label">VERİLƏNLƏR BAZASI</div>
-                <div class="metric-value">SYNC OK</div>
-            </div>
-            <div class="sidebar-title" style="margin-top: 10px;">Tez Əmrlər</div>
-            <button class="hud-btn" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="sendQuickPrompt('Sistem statusunu yoxla')">Statusu Yoxla</button>
-            <button class="hud-btn" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="sendQuickPrompt('Kiməsən sən?')">Özünü Tanıt</button>
+    <aside>
+        <div class="sidebar-title">SİSTEM MODULLARI</div>
+        <div class="metric-card">
+            <div class="metric-label">REACTIVE ENGINE</div>
+            <div class="metric-value" style="color: #00ffcc;">AKTİV</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">SƏS TANINMA (AZ)</div>
+            <div class="metric-value" id="micStatusIndicator" style="color: #ff0055;">GÖZLƏYİR</div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-label">VERİLƏNLƏR BAZASI</div>
+            <div class="metric-value">SYNC OK</div>
         </div>
 
-        <!-- Əsas İş Sahəsi və Söhbət Pəncərəsi -->
-        <div class="hud-workspace">
-            <div class="visualizer-container">
-                <div class="visualizer">
-                    <div class="visualizer-inner" id="vizText">AI</div>
-                </div>
-            </div>
+        <div class="sidebar-title" style="margin-top: 10px;">TEZ ƏMRLƏR</div>
+        <button class="hud-btn" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="sendQuickPrompt('Sistem statusunu yoxla')">Statusu Yoxla</button>
+        <button class="hud-btn" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="sendQuickPrompt('Kiməsən sən?')">Özünü Tanıt</button>
+    </aside>
 
-            <div class="chat-history" id="chatHistory">
-                <div class="message ai">Salam! Mən STORMX AI-yam. Tam genişləndirilmiş HUD interfeysi və səs modulu ilə işləməyə hazıram. Səslə və ya mətnlə əmr verə bilərsən.</div>
-            </div>
-
-            <div class="input-panel">
-                <input type="text" id="userInput" class="chat-input" placeholder="Əmr və ya mesaj daxil edin..." autocomplete="off">
-                <button class="hud-btn" id="sendBtn">Göndər</button>
-                <button class="hud-btn" id="micBtn">Dinlə</button>
-                <button class="hud-btn" id="speakBtn">Oxu</button>
+    <main>
+        <div class="visualizer-container">
+            <div class="visualizer">
+                <div class="visualizer-inner" id="vizText">AI</div>
             </div>
         </div>
-    </div>
+
+        <div class="output-box" id="outputBox">
+            Salam! Mən STORMX AI-yam. Tam genişləndirilmiş HUD interfeysi və səs modulu ilə işləməyə hazıram. Səslə və ya mətnlə əmr verə bilərsən.
+        </div>
+
+        <div class="control-panel">
+            <input type="text" id="userInput" class="chat-input" placeholder="Əmr və ya mesaj daxil edin..." autocomplete="off">
+            <button class="hud-btn" id="sendBtn">Göndər</button>
+            <button class="hud-btn" id="micBtn">Dinlə</button>
+            <button class="hud-btn" id="speakBtn">Oxu</button>
+        </div>
+    </main>
 
     <footer>
         <div>STORMX AI Interface &copy; 2026</div>
@@ -295,7 +270,7 @@
     </footer>
 
     <script>
-        const chatHistory = document.getElementById('chatHistory');
+        const outputBox = document.getElementById('outputBox');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         const micBtn = document.getElementById('micBtn');
@@ -306,22 +281,9 @@
 
         let recognition = null;
         let isListening = false;
-        let lastAiMessage = "Salam! Mən STORMX AI-yam. Tam genişləndirilmiş HUD interfeysi və səs modulu ilə işləməyə hazıram.";
+        let lastResponseText = "Salam! Mən STORMX AI-yam. Tam genişləndirilmiş HUD interfeysi və səs modulu ilə işləməyə hazıram.";
 
-        // Mesaj əlavə etmək üçün köməkçi funksiya
-        function appendMessage(text, sender) {
-            const msgDiv = document.createElement('div');
-            msgDiv.classList.add('message', sender);
-            msgDiv.innerText = text;
-            chatHistory.appendChild(msgDiv);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-            
-            if (sender === 'ai') {
-                lastAiMessage = text;
-            }
-        }
-
-        // Səsli oxutma (Text-to-Speech)
+        // Text-to-Speech (Səsləndirmə)
         function speakText(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -333,7 +295,7 @@
             }
         }
 
-        // Speech Recognition Setup (Azərbaycan dili dəstəyi ilə)
+        // Speech Recognition Setup (Azərbaycan dili)
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
@@ -343,7 +305,7 @@
 
             recognition.onstart = function() {
                 isListening = true;
-                statusBadge.innerText = 'Dinlənilir...';
+                statusBadge.innerText = 'DİNLƏNİLİR...';
                 micStatusIndicator.innerText = 'DİNLƏNİLİR';
                 micStatusIndicator.style.color = '#ff0055';
                 micBtn.classList.add('active');
@@ -353,12 +315,12 @@
 
             recognition.onresult = function(event) {
                 const speechResult = event.results[0][0].transcript;
-                appendMessage(speechResult, 'user');
+                outputBox.innerText = `Siz dediniz: "${speechResult}"`;
                 processAIResponse(speechResult);
             };
 
             recognition.onerror = function(event) {
-                statusBadge.innerText = 'Xəta baş verdi';
+                statusBadge.innerText = 'XƏTA BAŞ VERDİ';
                 stopListening();
             };
 
@@ -366,7 +328,7 @@
                 stopListening();
             };
         } else {
-            statusBadge.innerText = 'Səs tanınma dəstəklənmir';
+            statusBadge.innerText = 'SƏS DƏSTƏKLƏNMİR';
             micBtn.disabled = true;
         }
 
@@ -382,7 +344,7 @@
 
         function stopListening() {
             isListening = false;
-            statusBadge.innerText = 'Sistem Hazırdır';
+            statusBadge.innerText = 'SİSTEM HAZIRDIR';
             micStatusIndicator.innerText = 'GÖZLƏYİR';
             micStatusIndicator.style.color = '#ff0055';
             micBtn.classList.remove('active');
@@ -399,7 +361,6 @@
             }
         });
 
-        // Cavab Emalı (Süni intellekt cavab simulyasiyası / API qovşağı)
         function processAIResponse(inputText) {
             const query = inputText.toLowerCase();
             let response = "";
@@ -409,28 +370,29 @@
             } else if (query.includes('adın nədir')) {
                 response = "Mənim adım STORMX AI-dır. Sənin rəqəmsal HUD köməkçinim.";
             } else if (query.includes('status')) {
-                response = "Bütün əsas modullar stabil işləyir, səbəbkar isə sənsən!";
+                response = "Bütün əsas modullar stabil işləyir!";
             } else {
                 response = `"${inputText}" əmriniz qəbul olundu. Məlumatlar emal edilir.`;
             }
 
+            lastResponseText = response;
             setTimeout(() => {
-                appendMessage(response, 'ai');
+                outputBox.innerText = response;
                 speakText(response);
-            }, 500);
+            }, 400);
         }
 
         function handleSend() {
             const text = userInput.value.trim();
             if (text !== "") {
-                appendMessage(text, 'user');
+                outputBox.innerText = `Siz yazdınız: "${text}"`;
                 userInput.value = "";
                 processAIResponse(text);
             }
         }
 
         function sendQuickPrompt(promptText) {
-            appendMessage(promptText, 'user');
+            outputBox.innerText = `Siz yazdınız: "${promptText}"`;
             processAIResponse(promptText);
         }
 
@@ -442,7 +404,7 @@
         });
 
         speakBtn.addEventListener('click', () => {
-            speakText(lastAiMessage);
+            speakText(outputBox.innerText);
         });
     </script>
 </body>
