@@ -115,7 +115,6 @@
             margin-bottom: 8px;
         }
         
-        /* Time Module */
         .time-display {
             font-size: 1.8rem;
             font-weight: bold;
@@ -134,7 +133,6 @@
             letter-spacing: 1px;
         }
 
-        /* Weather Module */
         .weather-temp {
             font-size: 1.6rem;
             font-weight: bold;
@@ -147,7 +145,6 @@
             line-height: 1.4;
         }
 
-        /* System Status Module */
         .stat-row {
             display: flex;
             justify-content: space-between;
@@ -231,6 +228,8 @@
             border: 1px solid rgba(255, 170, 0, 0.3);
             padding: 8px 20px;
             border-radius: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
         .dock-btn {
             background: none;
@@ -287,6 +286,7 @@
             line-height: 1.4;
             color: #d4f8ff;
             overflow-y: auto;
+            min-height: 200px;
         }
         .chat-input-area {
             display: flex;
@@ -328,16 +328,33 @@
             border-top: 1px solid rgba(255, 170, 0, 0.2);
             padding-top: 6px;
             letter-spacing: 1px;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        /* Responsive Media Query for Mobile / Tablets */
+        @media (max-width: 1024px) {
+            body {
+                height: auto;
+                overflow-y: auto;
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+                display: flex;
+                flex-direction: column;
+            }
+            main.center-panel {
+                min-height: 350px;
+            }
+            aside.right-panel {
+                min-height: 400px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
     <header>
-        <!-- Arxa fondakı su nişanı (Watermark) -->
         <div class="header-bg-watermark">SOLO STUDIO</div>
-
         <div class="header-left">
             SYSTEM SETTINGS<br>
             <span style="color: #ffaa00;">VOICE CORE • WINDOWS</span>
@@ -351,7 +368,6 @@
         </div>
     </header>
 
-    <!-- Left Panel -->
     <aside class="left-panel">
         <div class="panel-box">
             <div class="box-title">TIME</div>
@@ -407,7 +423,6 @@
         </div>
     </aside>
 
-    <!-- Center Panel -->
     <main class="center-panel">
         <div class="hud-visualizer" id="hudVisualizer">
             <div class="hud-core">⚡</div>
@@ -425,7 +440,6 @@
         </div>
     </main>
 
-    <!-- Right Panel -->
     <aside class="right-panel">
         <div class="right-top-header">
             <span style="color: #ffaa00; border-bottom: 1px solid #ffaa00; padding-bottom: 2px;">CONVERSATION</span>
@@ -442,14 +456,12 @@
         </div>
     </aside>
 
-    <!-- Footer -->
     <footer>
         <div>BUTA AI • Windows Edition • Realtime Voice Core</div>
         <div>[F4] MUTE &nbsp; [F5] PAUSE &nbsp; [CAM] &nbsp; [F11] FULLSCREEN</div>
     </footer>
 
     <script>
-        // Real-time Clock & Uptime counter
         let seconds = 26;
         let isPaused = false;
         let isOnline = true;
@@ -464,7 +476,6 @@
             }
         }, 1000);
 
-        // Real Battery API
         if ('getBattery' in navigator) {
             navigator.getBattery().then(battery => {
                 function updateBattery() {
@@ -477,7 +488,6 @@
             });
         }
 
-        // System Fluctuations
         setInterval(() => {
             if (!isPaused && isOnline) {
                 let cpu = Math.floor(Math.random() * 15) + 10;
@@ -495,7 +505,6 @@
             }
         }, 2500);
 
-        // UI elements & Interactivity
         const outputBox = document.getElementById('outputBox');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
@@ -506,7 +515,6 @@
         const shutdownBtn = document.getElementById('shutdownBtn');
         const hudVisualizer = document.getElementById('hudVisualizer');
 
-        // 1. LIVE / Microphone (Speech Recognition)
         let recognition = null;
         let listening = false;
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -548,7 +556,6 @@
             }
         });
 
-        // 2. PAUSE Button
         pauseBtn.addEventListener('click', () => {
             if (!isOnline) return;
             isPaused = !isPaused;
@@ -565,7 +572,6 @@
             }
         });
 
-        // 3. CAM Button (Webcam Stream)
         let camActive = false;
         let videoElement = null;
         camBtn.addEventListener('click', async () => {
@@ -603,7 +609,6 @@
             }
         });
 
-        // 4. SHUTDOWN Button
         shutdownBtn.addEventListener('click', () => {
             isOnline = false;
             document.getElementById('onlineDot').style.backgroundColor = '#ff3333';
@@ -614,7 +619,6 @@
             outputBox.innerHTML += `<br><br><b>SYS:</b> Sistem söndürüldü.`;
         });
 
-        // AI Command Processor with Solo Studio check
         async function processCommand(text) {
             if (!isOnline) return;
             
