@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JARVIS // STARK INDUSTRIES</title>
+    <title>BUTA AI - Advanced Neural Intelligence System</title>
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -11,200 +11,274 @@
             padding: 0;
         }
         body {
-            background-color: #080302;
-            color: #ffb700;
+            background-color: #020b0e;
+            color: #ffaa00;
             font-family: 'Courier New', Courier, monospace;
             height: 100vh;
             overflow: hidden;
             display: grid;
             grid-template-rows: auto 1fr auto;
-            grid-template-columns: 280px 1fr;
+            grid-template-columns: 320px 1fr 340px;
             gap: 15px;
-            padding: 20px;
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(255, 123, 0, 0.05) 0%, rgba(8, 3, 2, 0.98) 100%),
-                linear-gradient(rgba(255, 183, 0, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(255, 183, 0, 0.02) 1px, transparent 1px);
-            background-size: 100% 100%, 20px 20px, 20px 20px;
+            padding: 15px;
         }
 
-        /* Header */
+        /* Top Header */
         header {
             grid-column: 1 / -1;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid rgba(255, 183, 0, 0.4);
-            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 170, 0, 0.2);
+            padding-bottom: 10px;
         }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            letter-spacing: 3px;
-            color: #ffb700;
-            text-shadow: 0 0 12px rgba(255, 183, 0, 0.6);
-        }
-        .header-badges {
-            display: flex;
-            gap: 15px;
-        }
-        .status-badge {
-            font-size: 0.8rem;
-            background: rgba(255, 183, 0, 0.1);
-            border: 1px solid #ffb700;
-            padding: 5px 12px;
-            border-radius: 4px;
-            text-transform: uppercase;
+        .header-left {
+            font-size: 0.75rem;
             letter-spacing: 1px;
-            color: #ffb700;
+            color: #ffaa00;
+        }
+        .header-center {
+            text-align: center;
+        }
+        .logo-title {
+            font-size: 1.4rem;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: #ffaa00;
+            text-shadow: 0 0 10px rgba(255, 170, 0, 0.4);
+        }
+        .logo-sub {
+            font-size: 0.65rem;
+            letter-spacing: 1.5px;
+            color: #d48806;
+            margin-top: 2px;
+        }
+        .header-right {
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #ffaa00;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #ffaa00;
         }
 
-        /* Sidebar */
-        aside {
-            background: rgba(30, 10, 0, 0.4);
-            border: 1px solid rgba(255, 183, 0, 0.3);
-            border-radius: 8px;
-            padding: 15px;
+        /* Left Sidebar */
+        aside.left-panel {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            overflow-y: auto;
         }
-        .sidebar-title {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            border-bottom: 1px dashed rgba(255, 183, 0, 0.3);
-            padding-bottom: 6px;
-            letter-spacing: 1px;
-            color: #ffcc33;
+        .panel-box {
+            background: rgba(0, 15, 20, 0.4);
+            border: 1px solid rgba(255, 170, 0, 0.25);
+            border-radius: 4px;
+            padding: 12px;
         }
-        .metric-card {
-            background: rgba(255, 183, 0, 0.03);
-            border: 1px solid rgba(255, 183, 0, 0.2);
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .metric-label {
+        .box-title {
             font-size: 0.7rem;
-            color: rgba(255, 183, 0, 0.7);
+            text-transform: uppercase;
+            border-bottom: 1px dashed rgba(255, 170, 0, 0.2);
+            padding-bottom: 4px;
+            letter-spacing: 1px;
+            color: #d48806;
+            margin-bottom: 8px;
         }
-        .metric-value {
-            font-size: 1rem;
+        
+        /* Time Module */
+        .time-display {
+            font-size: 1.8rem;
             font-weight: bold;
+            letter-spacing: 2px;
+            color: #00ffff;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+        }
+        .time-display span {
+            font-size: 1.1rem;
+            color: #ffaa00;
+        }
+        .date-display {
+            font-size: 0.7rem;
+            color: rgba(255, 170, 0, 0.8);
             margin-top: 4px;
-            color: #ffb700;
+            letter-spacing: 1px;
         }
 
-        /* Main HUD Workspace */
-        main {
-            background: rgba(20, 5, 0, 0.5);
-            border: 1px solid rgba(255, 183, 0, 0.4);
-            border-radius: 8px;
-            padding: 20px;
+        /* Weather Module */
+        .weather-temp {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #ffaa00;
+        }
+        .weather-info {
+            font-size: 0.72rem;
+            color: rgba(255, 170, 0, 0.8);
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        /* System Status Module */
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            margin-bottom: 4px;
+        }
+        .stat-bar {
+            width: 100%;
+            height: 5px;
+            background: rgba(255, 170, 0, 0.1);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+            border-radius: 2px;
+            margin-bottom: 8px;
+            overflow: hidden;
+        }
+        .stat-fill {
+            height: 100%;
+            background: #ffaa00;
+            box-shadow: 0 0 6px #ffaa00;
+        }
+        .network-speed {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.68rem;
+            margin-top: 6px;
+        }
+
+        /* Center Main Stage */
+        main.center-panel {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 0 25px rgba(255, 183, 0, 0.05);
-        }
-
-        .visualizer-container {
-            display: flex;
-            justify-content: center;
             align-items: center;
-            margin-bottom: 10px;
+            background: rgba(0, 10, 15, 0.3);
+            border: 1px solid rgba(255, 170, 0, 0.2);
+            border-radius: 4px;
+            padding: 20px;
+            position: relative;
         }
-        .visualizer {
-            width: 120px;
-            height: 120px;
-            border: 3px dashed rgba(255, 183, 0, 0.5);
+        .hud-visualizer {
+            width: 220px;
+            height: 220px;
+            border: 1px dashed rgba(0, 255, 255, 0.4);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            animation: rotate 12s linear infinite;
-            box-shadow: 0 0 15px rgba(255, 123, 0, 0.2);
+            margin: auto;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.05);
+            animation: spin 20s linear infinite;
         }
-        .visualizer-inner {
-            width: 85px;
-            height: 85px;
-            background: rgba(255, 183, 0, 0.1);
+        .hud-core {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff5500, #ffaa00);
             border-radius: 50%;
-            box-shadow: 0 0 20px rgba(255, 183, 0, 0.4);
+            box-shadow: 0 0 15px #ffaa00;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            color: #ffb700;
-            transition: background 0.3s ease;
+            font-size: 1.2rem;
         }
-        @keyframes rotate {
+        @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
-        .output-box {
-            width: 100%;
-            height: 140px;
-            background: rgba(10, 3, 0, 0.8);
-            border: 1px solid rgba(255, 183, 0, 0.4);
-            border-radius: 6px;
-            padding: 15px;
-            overflow-y: auto;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
+        .status-message {
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: #ffaa00;
+            text-align: center;
             margin-bottom: 15px;
-            color: #ffe58f;
+        }
+        .control-dock {
+            display: flex;
+            gap: 15px;
+            background: rgba(0, 15, 20, 0.8);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+            padding: 8px 20px;
+            border-radius: 20px;
+        }
+        .dock-btn {
+            background: none;
+            border: none;
+            color: #ffaa00;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.72rem;
+            cursor: pointer;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .dock-btn:hover {
+            color: #00ffff;
+        }
+        .dock-btn.shutdown {
+            color: #ff3333;
         }
 
-        .control-panel {
+        /* Right Sidebar */
+        aside.right-panel {
             display: flex;
-            gap: 12px;
-            align-items: center;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .right-top-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            border-bottom: 1px solid rgba(255, 170, 0, 0.3);
+            padding-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        .conversation-box {
+            flex: 1;
+            background: rgba(0, 10, 15, 0.5);
+            border: 1px solid rgba(255, 170, 0, 0.25);
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 0.78rem;
+            line-height: 1.4;
+            color: #d4f8ff;
+            overflow-y: auto;
+        }
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
         }
         .chat-input {
             flex: 1;
-            background: rgba(30, 10, 0, 0.8);
-            border: 1px solid rgba(255, 183, 0, 0.4);
-            border-radius: 5px;
-            padding: 12px 15px;
-            color: #ffb700;
+            background: rgba(0, 15, 20, 0.6);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+            border-radius: 4px;
+            padding: 8px 10px;
+            color: #ffaa00;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 0.95rem;
+            font-size: 0.75rem;
             outline: none;
-            transition: all 0.3s ease;
         }
-        .chat-input:focus {
-            border-color: #ffb700;
-            box-shadow: 0 0 12px rgba(255, 183, 0, 0.4);
-        }
-        .hud-btn {
-            background: rgba(255, 183, 0, 0.15);
-            color: #ffb700;
-            border: 1px solid #ffb700;
-            padding: 12px 20px;
+        .send-btn {
+            background: rgba(255, 170, 0, 0.15);
+            border: 1px solid #ffaa00;
+            color: #ffaa00;
+            padding: 0 12px;
+            border-radius: 4px;
+            cursor: pointer;
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(255, 183, 0, 0.2);
-            letter-spacing: 1px;
+            font-size: 0.72rem;
         }
-        .hud-btn:hover {
-            background: rgba(255, 183, 0, 0.35);
-            box-shadow: 0 0 20px rgba(255, 183, 0, 0.6);
-        }
-        .hud-btn.active {
-            background: #ff2a00;
-            border-color: #ff2a00;
-            color: #fff;
-            box-shadow: 0 0 20px rgba(255, 42, 0, 0.8);
+        .send-btn:hover {
+            background: rgba(255, 170, 0, 0.3);
         }
 
         /* Footer */
@@ -212,202 +286,178 @@
             grid-column: 1 / -1;
             display: flex;
             justify-content: space-between;
-            font-size: 0.75rem;
-            color: rgba(255, 183, 0, 0.5);
-            border-top: 1px solid rgba(255, 183, 0, 0.2);
-            padding-top: 8px;
+            font-size: 0.68rem;
+            color: rgba(255, 170, 0, 0.5);
+            border-top: 1px solid rgba(255, 170, 0, 0.2);
+            padding-top: 6px;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
+    <!-- Header -->
     <header>
-        <div class="logo">J.A.R.V.I.S. // STARK</div>
-        <div class="status-badge" id="statusBadge">SYSTEM ONLINE</div>
-        <div class="header-badges">
-            <div class="status-badge">MARK LXXXV</div>
-            <div class="status-badge">SECURE_LINK</div>
+        <div class="header-left">
+            SYSTEM SETTINGS<br>
+            <span style="color: #ffaa00;">VOICE CORE • WINDOWS</span>
+        </div>
+        <div class="header-center">
+            <div class="logo-title">BUTA AI</div>
+            <div class="logo-sub">Advanced Neural Intelligence System</div>
+        </div>
+        <div class="header-right">
+            <div class="online-dot"></div> ONLINE
         </div>
     </header>
 
-    <aside>
-        <div class="sidebar-title">SYSTEM MODULES</div>
-        <div class="metric-card">
-            <div class="metric-label">ARC REACTOR</div>
-            <div class="metric-value" style="color: #ffb700;">100% STABLE</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-label">VOICE RECOGNITION (AZ)</div>
-            <div class="metric-value" id="micStatusIndicator" style="color: #ff2a00;">STANDBY</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-label">DIAGNOSTICS</div>
-            <div class="metric-value">ALL CLEAR</div>
+    <!-- Left Panel -->
+    <aside class="left-panel">
+        <div class="panel-box">
+            <div class="box-title">TIME</div>
+            <div class="time-display" id="clock">00:17<span>:47</span></div>
+            <div class="date-display" id="dateText">22 AUGUST 2026<br>SATURDAY</div>
         </div>
 
-        <div class="sidebar-title" style="margin-top: 10px;">QUICK COMMANDS</div>
-        <button class="hud-btn" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="sendQuickPrompt('Sistem statusunu yoxla')">Check Status</button>
-        <button class="hud-btn" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="sendQuickPrompt('Kiməsən sən?')">Protocol Info</button>
-    </aside>
-
-    <main>
-        <div class="visualizer-container">
-            <div class="visualizer">
-                <div class="visualizer-inner" id="vizText">AI</div>
+        <div class="panel-box">
+            <div class="box-title">WEATHER • BAKU</div>
+            <div class="weather-temp">26°C</div>
+            <div class="weather-info">
+                • partly cloudy<br>
+                • hissədilən 28 dərəcə<br>
+                • nem yüzde 45
             </div>
         </div>
 
-        <div class="output-box" id="outputBox">
-            Salam cənab Stark. J.A.R.V.I.S. sistemləri tam aktivdir. Əmrlərinizi gözləyirəm.
+        <div class="panel-box">
+            <div class="box-title">SYSTEM STATUS</div>
+            <div class="stat-row">
+                <span>UPTIME</span>
+                <span id="uptimeCounter">00:00:15</span>
+            </div>
+            
+            <div class="stat-row">
+                <span>CPU</span>
+                <span>12%</span>
+            </div>
+            <div class="stat-bar"><div class="stat-fill" style="width: 12%;"></div></div>
+
+            <div class="stat-row">
+                <span>RAM</span>
+                <span>74%</span>
+            </div>
+            <div class="stat-bar"><div class="stat-fill" style="width: 74%;"></div></div>
+
+            <div class="stat-row">
+                <span>DISK</span>
+                <span>57%</span>
+            </div>
+            <div class="stat-bar"><div class="stat-fill" style="width: 57%;"></div></div>
+
+            <div class="stat-row">
+                <span>BATTERY</span>
+                <span>82%</span>
+            </div>
+            <div class="stat-bar"><div class="stat-fill" style="width: 82%; background: #00ffaa; box-shadow: 0 0 6px #00ffaa;"></div></div>
+
+            <div class="network-speed">
+                <span style="color: #00ffaa;">▲ 34.2 KB/s</span>
+                <span style="color: #ff3333;">▼ 18.1 KB/s</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Center Panel -->
+    <main class="center-panel">
+        <div class="hud-visualizer">
+            <div class="hud-core">⚡</div>
         </div>
 
-        <div class="control-panel">
-            <input type="text" id="userInput" class="chat-input" placeholder="Əmr daxil edin..." autocomplete="off">
-            <button class="hud-btn" id="sendBtn">Göndər</button>
-            <button class="hud-btn" id="micBtn">Dinlə</button>
-            <button class="hud-btn" id="speakBtn">Oxu</button>
+        <div class="status-message" id="statusMessage">
+            🟡 BUTA AI Hazır. Dinləyirəm...
+        </div>
+
+        <div class="control-dock">
+            <button class="dock-btn" id="micToggleBtn">🎤 LIVE</button>
+            <button class="dock-btn">⏸ PAUSE</button>
+            <button class="dock-btn">📷 CAM</button>
+            <button class="dock-btn shutdown">SHUTDOWN</button>
         </div>
     </main>
 
+    <!-- Right Panel -->
+    <aside class="right-panel">
+        <div class="right-top-header">
+            <span style="color: #ffaa00; border-bottom: 1px solid #ffaa00; padding-bottom: 2px;">CONVERSATION</span>
+            <span style="color: rgba(255,170,0,0.5); cursor: pointer;">THINKING</span>
+        </div>
+
+        <div class="conversation-box" id="outputBox">
+            SYS: BUTA AI hazır. Dinləyirəm...
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="userInput" class="chat-input" placeholder="Əmr yazın və ya səslə deyin..." autocomplete="off">
+            <button class="send-btn" id="sendBtn">SEND ►</button>
+        </div>
+    </aside>
+
+    <!-- Footer -->
     <footer>
-        <div>STARK INDUSTRIES &copy; 2026</div>
-        <div>MARK LXXXV INTERFACE</div>
+        <div>BUTA AI • Windows Edition • Realtime Voice Core</div>
+        <div>[F4] MUTE &nbsp; [F5] PAUSE &nbsp; [CAM] &nbsp; [F11] FULLSCREEN</div>
     </footer>
 
     <script>
+        // Real-time Clock & Uptime update
+        let seconds = 15;
+        setInterval(() => {
+            seconds++;
+            let h = String(Math.floor(seconds / 3600)).padStart(2, '0');
+            let m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+            let s = String(seconds % 60).padStart(2, '0');
+            document.getElementById('uptimeCounter').innerText = `${h}:${m}:${s}`;
+        }, 1000);
+
         const outputBox = document.getElementById('outputBox');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
-        const micBtn = document.getElementById('micBtn');
-        const speakBtn = document.getElementById('speakBtn');
-        const statusBadge = document.getElementById('statusBadge');
-        const micStatusIndicator = document.getElementById('micStatusIndicator');
-        const vizText = document.getElementById('vizText');
+        const statusMessage = document.getElementById('statusMessage');
 
-        let recognition = null;
-        let isListening = false;
-        let lastResponseText = "Salam cənab Stark. J.A.R.V.I.S. sistemləri tam aktivdir.";
-
-        function speakText(text) {
+        function processCommand(text) {
+            const query = text.toLowerCase();
+            let reply = "";
+            if (query.includes('necəsən')) {
+                reply = "Sistemlər maksimum səviyyədə işləyir, hər şey qaydasındadır.";
+            } else if (query.includes('adın nədir')) {
+                reply = "Mən BUTA AI, qabaqcıl neyron intellekt sistemiyəm.";
+            } else {
+                reply = `Əmr qəbul olundu: "${text}". Emal edilir...`;
+            }
+            
+            outputBox.innerHTML += `<br><br><b>Siz:</b> ${text}<br><b>SYS:</b> ${reply}`;
+            outputBox.scrollTop = outputBox.scrollHeight;
+            statusMessage.innerText = `🟢 ${reply}`;
+            
             if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
+                const utterance = new SpeechSynthesisUtterance(reply);
                 utterance.lang = 'az-AZ';
-                utterance.rate = 1.0;
-                utterance.pitch = 1.0;
                 window.speechSynthesis.speak(utterance);
             }
         }
 
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.lang = 'az-AZ';
-            recognition.interimResults = false;
-            recognition.maxAlternatives = 1;
-
-            recognition.onstart = function() {
-                isListening = true;
-                statusBadge.innerText = 'LISTENING...';
-                micStatusIndicator.innerText = 'ACTIVE';
-                micStatusIndicator.style.color = '#ff2a00';
-                micBtn.classList.add('active');
-                micBtn.innerText = 'Stop';
-                vizText.style.background = 'rgba(255, 42, 0, 0.4)';
-            };
-
-            recognition.onresult = function(event) {
-                const speechResult = event.results[0][0].transcript;
-                outputBox.innerText = `Siz dediniz: "${speechResult}"`;
-                processAIResponse(speechResult);
-            };
-
-            recognition.onerror = function(event) {
-                statusBadge.innerText = 'ERROR';
-                stopListening();
-            };
-
-            recognition.onend = function() {
-                stopListening();
-            };
-        } else {
-            statusBadge.innerText = 'NO SPEECH SUPPORT';
-            micBtn.disabled = true;
-        }
-
-        function startListening() {
-            if (recognition && !isListening) {
-                try {
-                    recognition.start();
-                } catch(e) {
-                    console.error(e);
-                }
-            }
-        }
-
-        function stopListening() {
-            isListening = false;
-            statusBadge.innerText = 'SYSTEM ONLINE';
-            micStatusIndicator.innerText = 'STANDBY';
-            micStatusIndicator.style.color = '#ff2a00';
-            micBtn.classList.remove('active');
-            micBtn.innerText = 'Dinlə';
-            vizText.style.background = 'rgba(255, 183, 0, 0.1)';
-        }
-
-        micBtn.addEventListener('click', () => {
-            if (isListening) {
-                recognition.stop();
-                stopListening();
-            } else {
-                startListening();
+        sendBtn.addEventListener('click', () => {
+            const val = userInput.value.trim();
+            if(val) {
+                processCommand(val);
+                userInput.value = '';
             }
         });
 
-        function processAIResponse(inputText) {
-            const query = inputText.toLowerCase();
-            let response = "";
-
-            if (query.includes('necəsən') || query.includes('neçəsən')) {
-                response = "Bütün sistemlər əla işləyir, cənab.";
-            } else if (query.includes('adın nədir')) {
-                response = "Mənim adım J.A.R.V.I.S., Stark Sənayesinin süni intellekt köməkçisiyəm.";
-            } else if (query.includes('status')) {
-                response = "Ark reaktoru stabildir, təhlükəsizlik səviyyəsi maksimumdur.";
-            } else {
-                response = `"${inputText}" əmriniz qəbul olundu, cənab.`;
-            }
-
-            lastResponseText = response;
-            setTimeout(() => {
-                outputBox.innerText = response;
-                speakText(response);
-            }, 400);
-        }
-
-        function handleSend() {
-            const text = userInput.value.trim();
-            if (text !== "") {
-                outputBox.innerText = `Siz yazdınız: "${text}"`;
-                userInput.value = "";
-                processAIResponse(text);
-            }
-        }
-
-        function sendQuickPrompt(promptText) {
-            outputBox.innerText = `Siz yazdınız: "${promptText}"`;
-            processAIResponse(promptText);
-        }
-
-        sendBtn.addEventListener('click', handleSend);
         userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleSend();
+            if(e.key === 'Enter') {
+                sendBtn.click();
             }
-        });
-
-        speakBtn.addEventListener('click', () => {
-            speakText(outputBox.innerText);
         });
     </script>
 </body>
