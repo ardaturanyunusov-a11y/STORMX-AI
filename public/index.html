@@ -219,12 +219,24 @@
             display: flex;
             align-items: center;
             gap: 5px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.3s;
         }
         .dock-btn:hover {
+            background: rgba(255, 170, 0, 0.15);
             color: #00ffff;
+        }
+        .dock-btn.active {
+            background: rgba(0, 255, 255, 0.2);
+            color: #00ffff;
+            box-shadow: 0 0 8px rgba(0,255,255,0.4);
         }
         .dock-btn.shutdown {
             color: #ff3333;
+        }
+        .dock-btn.shutdown:hover {
+            background: rgba(255, 51, 51, 0.2);
         }
 
         /* Right Sidebar */
@@ -308,7 +320,7 @@
             <div class="logo-sub">Advanced Neural Intelligence System</div>
         </div>
         <div class="header-right">
-            <div class="online-dot"></div> ONLINE
+            <div class="online-dot" id="onlineDot"></div> <span id="onlineText">ONLINE</span>
         </div>
     </header>
 
@@ -370,7 +382,7 @@
 
     <!-- Center Panel -->
     <main class="center-panel">
-        <div class="hud-visualizer">
+        <div class="hud-visualizer" id="hudVisualizer">
             <div class="hud-core">⚡</div>
         </div>
 
@@ -380,9 +392,9 @@
 
         <div class="control-dock">
             <button class="dock-btn" id="micToggleBtn">🎤 LIVE</button>
-            <button class="dock-btn">⏸ PAUSE</button>
-            <button class="dock-btn">📷 CAM</button>
-            <button class="dock-btn shutdown">SHUTDOWN</button>
+            <button class="dock-btn" id="pauseBtn">⏸ PAUSE</button>
+            <button class="dock-btn" id="camBtn">📷 CAM</button>
+            <button class="dock-btn shutdown" id="shutdownBtn">SHUTDOWN</button>
         </div>
     </main>
 
@@ -412,15 +424,20 @@
     <script>
         // Real-time Clock & Uptime counter
         let seconds = 26;
+        let isPaused = false;
+        let isOnline = true;
+
         setInterval(() => {
-            seconds++;
-            let h = String(Math.floor(seconds / 3600)).padStart(2, '0');
-            let m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
-            let s = String(seconds % 60).padStart(2, '0');
-            document.getElementById('uptimeCounter').innerText = `${h}:${m}:${s}`;
+            if (!isPaused && isOnline) {
+                seconds++;
+                let h = String(Math.floor(seconds / 3600)).padStart(2, '0');
+                let m = String(Math.floor((seconds % 3600) / 60)).padStart(2, '0');
+                let s = String(seconds % 60).padStart(2, '0');
+                document.getElementById('uptimeCounter').innerText = `${h}:${m}:${s}`;
+            }
         }, 1000);
 
-        // Real Battery API Integration
+        // Real Battery API
         if ('getBattery' in navigator) {
             navigator.getBattery().then(battery => {
                 function updateBattery() {
@@ -433,37 +450,146 @@
             });
         }
 
-        // Dynamic System Status Fluctuations (CPU, RAM, Network)
+        // System Fluctuations
         setInterval(() => {
-            // CPU fluctuation around 10-25%
-            let cpu = Math.floor(Math.random() * 15) + 10;
-            document.getElementById('cpuVal').innerText = cpu + '%';
-            document.getElementById('cpuBar').style.width = cpu + '%';
+            if (!isPaused && isOnline) {
+                let cpu = Math.floor(Math.random() * 15) + 10;
+                document.getElementById('cpuVal').innerText = cpu + '%';
+                document.getElementById('cpuBar').style.width = cpu + '%';
 
-            // RAM estimation using performance memory if available, or stable fluctuation
-            let ram = 74;
-            if (performance.memory) {
-                ram = Math.round((performance.memory.usedJSHeapSize / performance.memory.jsHeapSizeLimit) * 100) + 50;
-                if(ram > 90) ram = 78;
-            } else {
-                ram = Math.floor(Math.random() * 5) + 72;
+                let ram = Math.floor(Math.random() * 5) + 72;
+                document.getElementById('ramVal').innerText = ram + '%';
+                document.getElementById('ramBar').style.width = ram + '%';
+
+                let upSpeed = (Math.random() * 10 + 30).toFixed(1);
+                let downSpeed = (Math.random() * 5 + 15).toFixed(1);
+                document.getElementById('netUp').innerText = `▲ ${upSpeed} KB/s`;
+                document.getElementById('netDown').innerText = `▼ ${downSpeed} KB/s`;
             }
-            document.getElementById('ramVal').innerText = ram + '%';
-            document.getElementById('ramBar').style.width = ram + '%';
-
-            // Network speed fluctuation
-            let upSpeed = (Math.random() * 10 + 30).toFixed(1);
-            let downSpeed = (Math.random() * 5 + 15).toFixed(1);
-            document.getElementById('netUp').innerText = `▲ ${upSpeed} KB/s`;
-            document.getElementById('netDown').innerText = `▼ ${downSpeed} KB/s`;
         }, 2500);
 
+        // UI elements & Interactivity
         const outputBox = document.getElementById('outputBox');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         const statusMessage = document.getElementById('statusMessage');
+        const micToggleBtn = document.getElementById('micToggleBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const camBtn = document.getElementById('camBtn');
+        const shutdownBtn = document.getElementById('shutdownBtn');
+        const hudVisualizer = document.getElementById('hudVisualizer');
 
+        // 1. LIVE / Microphone (Speech Recognition)
+        let recognition = null;
+        let listening = false;
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'az-AZ';
+            recognition.continuous = false;
+
+            recognition.onresult = (event) => {
+                const speechText = event.results[0][0].transcript;
+                userInput.value = speechText;
+                processCommand(speechText);
+            };
+
+            recognition.onend = () => {
+                listening = false;
+                micToggleBtn.classList.remove('active');
+                micToggleBtn.innerText = '🎤 LIVE';
+            };
+        }
+
+        micToggleBtn.addEventListener('click', () => {
+            if (!isOnline) return;
+            if (!recognition) {
+                alert("Brauzeriniz səs tanımasını dəstəkləmir.");
+                return;
+            }
+            if (!listening) {
+                recognition.start();
+                listening = true;
+                micToggleBtn.classList.add('active');
+                micToggleBtn.innerText = '🎤 DİNLƏYİR...';
+                statusMessage.innerText = '🟢 Mikrofon aktivdir, danışın...';
+            } else {
+                recognition.stop();
+                listening = false;
+                micToggleBtn.classList.remove('active');
+                micToggleBtn.innerText = '🎤 LIVE';
+            }
+        });
+
+        // 2. PAUSE Button
+        pauseBtn.addEventListener('click', () => {
+            if (!isOnline) return;
+            isPaused = !isPaused;
+            if (isPaused) {
+                pauseBtn.classList.add('active');
+                pauseBtn.innerText = '▶ RESUME';
+                statusMessage.innerText = '⏸ Sistem fasilədədir.';
+                hudVisualizer.style.animationPlayState = 'paused';
+            } else {
+                pauseBtn.classList.remove('active');
+                pauseBtn.innerText = '⏸ PAUSE';
+                statusMessage.innerText = '🟢 BUTA AI aktivdir.';
+                hudVisualizer.style.animationPlayState = 'running';
+            }
+        });
+
+        // 3. CAM Button (Webcam Stream)
+        let camActive = false;
+        let videoElement = null;
+        camBtn.addEventListener('click', async () => {
+            if (!isOnline) return;
+            if (!camActive) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    videoElement = document.createElement('video');
+                    videoElement.srcObject = stream;
+                    videoElement.autoplay = true;
+                    videoElement.style.width = '100%';
+                    videoElement.style.height = '100%';
+                    videoElement.style.borderRadius = '50%';
+                    videoElement.style.objectFit = 'cover';
+                    
+                    hudVisualizer.innerHTML = '';
+                    hudVisualizer.appendChild(videoElement);
+                    camBtn.classList.add('active');
+                    camBtn.innerText = '📷 CAM ON';
+                    statusMessage.innerText = '📷 Kamera qoşuldu.';
+                    camActive = true;
+                } catch (err) {
+                    alert('Kameraya icazə verilmədi və ya kamera tapılmadı.');
+                }
+            } else {
+                if (videoElement && videoElement.srcObject) {
+                    let tracks = videoElement.srcObject.getTracks();
+                    tracks.forEach(track => track.stop());
+                }
+                hudVisualizer.innerHTML = '<div class="hud-core">⚡</div>';
+                camBtn.classList.remove('active');
+                camBtn.innerText = '📷 CAM';
+                statusMessage.innerText = '🟢 BUTA AI Hazır.';
+                camActive = false;
+            }
+        });
+
+        // 4. SHUTDOWN Button
+        shutdownBtn.addEventListener('click', () => {
+            isOnline = false;
+            document.getElementById('onlineDot').style.backgroundColor = '#ff3333';
+            document.getElementById('onlineDotstyle').boxShadow = '0 0 8px #ff3333';
+            document.getElementById('onlineText').innerText = 'OFFLINE';
+            statusMessage.innerText = '🔴 SİSTEM SÖNDÜRÜLDÜ.';
+            hudVisualizer.style.opacity = '0.2';
+            outputBox.innerHTML += `<br><br><b>SYS:</b> Sistem söndürüldü.`;
+        });
+
+        // AI Command Processor
         function processCommand(text) {
+            if (!isOnline) return;
             const query = text.toLowerCase();
             let reply = "";
             if (query.includes('necəsən')) {
@@ -487,7 +613,7 @@
 
         sendBtn.addEventListener('click', () => {
             const val = userInput.value.trim();
-            if(val) {
+            if(val && isOnline) {
                 processCommand(val);
                 userInput.value = '';
             }
