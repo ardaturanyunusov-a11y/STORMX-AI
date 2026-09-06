@@ -16,7 +16,7 @@ export default async function handler(req, res) {
         
         const systemInstruction = {
             role: "user",
-            parts: [{ text: `Sən STORMX AI-san. Cari seçilmiş dil budur: "${selectedLang}". 
+            parts: [{ text: `Sən BUTA AI-san. Cari seçilmiş dil budur: "${selectedLang}". 
 1. Əgər istifadəçinin yazdığı mətn seçilmiş dilə uyğundursa, yalnız və yalnız həmin seçilmiş dildə cavab ver.
 2. Əgər istifadəçi seçilmiş dildən başqa bir dildə yazarsa, süni intellekt heç bir digər cavab vermədən dərhal mütləq bu cümləni işlətsin: "Xahiş edirik, yuxarıdan danışdığınız dili seçin." (Əgər seçilmiş dil İngilis dilidirsə "Please select the language you are speaking from above", Rus dilidirsə "Пожалуйста, выберите язык, на котором вы говорите, сверху", Azərbaycan dilidirsə "Xahiş edirik, yuxarıdan danışdığınız dili seçin").` }]
         };
