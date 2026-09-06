@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>STORMX AI - HUD Interface</title>
+    <title>JARVIS // STARK INDUSTRIES</title>
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -11,8 +11,8 @@
             padding: 0;
         }
         body {
-            background-color: #030712;
-            color: #00ffcc;
+            background-color: #080302;
+            color: #ffb700;
             font-family: 'Courier New', Courier, monospace;
             height: 100vh;
             overflow: hidden;
@@ -22,9 +22,9 @@
             gap: 15px;
             padding: 20px;
             background-image: 
-                radial-gradient(circle at 50% 50%, rgba(0, 255, 204, 0.04) 0%, rgba(3, 7, 18, 0.96) 100%),
-                linear-gradient(rgba(0, 255, 204, 0.02) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 204, 0.02) 1px, transparent 1px);
+                radial-gradient(circle at 50% 50%, rgba(255, 123, 0, 0.05) 0%, rgba(8, 3, 2, 0.98) 100%),
+                linear-gradient(rgba(255, 183, 0, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 183, 0, 0.02) 1px, transparent 1px);
             background-size: 100% 100%, 20px 20px, 20px 20px;
         }
 
@@ -34,14 +34,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid rgba(0, 255, 204, 0.3);
+            border-bottom: 2px solid rgba(255, 183, 0, 0.4);
             padding-bottom: 12px;
         }
         .logo {
             font-size: 1.5rem;
             font-weight: bold;
-            letter-spacing: 2px;
-            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+            letter-spacing: 3px;
+            color: #ffb700;
+            text-shadow: 0 0 12px rgba(255, 183, 0, 0.6);
         }
         .header-badges {
             display: flex;
@@ -49,18 +50,19 @@
         }
         .status-badge {
             font-size: 0.8rem;
-            background: rgba(0, 255, 204, 0.1);
-            border: 1px solid #00ffcc;
+            background: rgba(255, 183, 0, 0.1);
+            border: 1px solid #ffb700;
             padding: 5px 12px;
             border-radius: 4px;
             text-transform: uppercase;
             letter-spacing: 1px;
+            color: #ffb700;
         }
 
         /* Sidebar */
         aside {
-            background: rgba(0, 15, 30, 0.4);
-            border: 1px solid rgba(0, 255, 204, 0.3);
+            background: rgba(30, 10, 0, 0.4);
+            border: 1px solid rgba(255, 183, 0, 0.3);
             border-radius: 8px;
             padding: 15px;
             display: flex;
@@ -70,31 +72,32 @@
         .sidebar-title {
             font-size: 0.85rem;
             text-transform: uppercase;
-            border-bottom: 1px dashed rgba(0, 255, 204, 0.3);
+            border-bottom: 1px dashed rgba(255, 183, 0, 0.3);
             padding-bottom: 6px;
             letter-spacing: 1px;
-            color: #79ffe1;
+            color: #ffcc33;
         }
         .metric-card {
-            background: rgba(0, 255, 204, 0.03);
-            border: 1px solid rgba(0, 255, 204, 0.15);
+            background: rgba(255, 183, 0, 0.03);
+            border: 1px solid rgba(255, 183, 0, 0.2);
             padding: 10px;
             border-radius: 5px;
         }
         .metric-label {
             font-size: 0.7rem;
-            color: rgba(0, 255, 204, 0.7);
+            color: rgba(255, 183, 0, 0.7);
         }
         .metric-value {
             font-size: 1rem;
             font-weight: bold;
             margin-top: 4px;
+            color: #ffb700;
         }
 
         /* Main HUD Workspace */
         main {
-            background: rgba(0, 10, 20, 0.5);
-            border: 1px solid rgba(0, 255, 204, 0.4);
+            background: rgba(20, 5, 0, 0.5);
+            border: 1px solid rgba(255, 183, 0, 0.4);
             border-radius: 8px;
             padding: 20px;
             display: flex;
@@ -102,7 +105,7 @@
             justify-content: space-between;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 0 25px rgba(0, 255, 204, 0.05);
+            box-shadow: inset 0 0 25px rgba(255, 183, 0, 0.05);
         }
 
         .visualizer-container {
@@ -112,28 +115,30 @@
             margin-bottom: 10px;
         }
         .visualizer {
-            width: 110px;
-            height: 110px;
-            border: 3px dashed rgba(0, 255, 204, 0.4);
+            width: 120px;
+            height: 120px;
+            border: 3px dashed rgba(255, 183, 0, 0.5);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            animation: rotate 10s linear infinite;
+            animation: rotate 12s linear infinite;
+            box-shadow: 0 0 15px rgba(255, 123, 0, 0.2);
         }
         .visualizer-inner {
-            width: 80px;
-            height: 80px;
-            background: rgba(0, 255, 204, 0.1);
+            width: 85px;
+            height: 85px;
+            background: rgba(255, 183, 0, 0.1);
             border-radius: 50%;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+            box-shadow: 0 0 20px rgba(255, 183, 0, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 1rem;
             font-weight: bold;
             letter-spacing: 2px;
+            color: #ffb700;
             transition: background 0.3s ease;
         }
         @keyframes rotate {
@@ -144,16 +149,16 @@
         .output-box {
             width: 100%;
             height: 140px;
-            background: rgba(0, 5, 12, 0.7);
-            border: 1px solid rgba(0, 255, 204, 0.4);
+            background: rgba(10, 3, 0, 0.8);
+            border: 1px solid rgba(255, 183, 0, 0.4);
             border-radius: 6px;
             padding: 15px;
             overflow-y: auto;
             font-size: 0.95rem;
             line-height: 1.4;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.9);
             margin-bottom: 15px;
-            color: #e0fbfc;
+            color: #ffe58f;
         }
 
         .control-panel {
@@ -163,24 +168,24 @@
         }
         .chat-input {
             flex: 1;
-            background: rgba(0, 15, 30, 0.8);
-            border: 1px solid rgba(0, 255, 204, 0.4);
+            background: rgba(30, 10, 0, 0.8);
+            border: 1px solid rgba(255, 183, 0, 0.4);
             border-radius: 5px;
             padding: 12px 15px;
-            color: #00ffcc;
+            color: #ffb700;
             font-family: 'Courier New', Courier, monospace;
             font-size: 0.95rem;
             outline: none;
             transition: all 0.3s ease;
         }
         .chat-input:focus {
-            border-color: #00ffcc;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.3);
+            border-color: #ffb700;
+            box-shadow: 0 0 12px rgba(255, 183, 0, 0.4);
         }
         .hud-btn {
-            background: rgba(0, 255, 204, 0.15);
-            color: #00ffcc;
-            border: 1px solid #00ffcc;
+            background: rgba(255, 183, 0, 0.15);
+            color: #ffb700;
+            border: 1px solid #ffb700;
             padding: 12px 20px;
             font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
@@ -188,18 +193,18 @@
             cursor: pointer;
             transition: all 0.3s ease;
             text-transform: uppercase;
-            box-shadow: 0 0 10px rgba(0, 255, 204, 0.2);
+            box-shadow: 0 0 10px rgba(255, 183, 0, 0.2);
             letter-spacing: 1px;
         }
         .hud-btn:hover {
-            background: rgba(0, 255, 204, 0.35);
-            box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+            background: rgba(255, 183, 0, 0.35);
+            box-shadow: 0 0 20px rgba(255, 183, 0, 0.6);
         }
         .hud-btn.active {
-            background: #ff0055;
-            border-color: #ff0055;
+            background: #ff2a00;
+            border-color: #ff2a00;
             color: #fff;
-            box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
+            box-shadow: 0 0 20px rgba(255, 42, 0, 0.8);
         }
 
         /* Footer */
@@ -208,8 +213,8 @@
             display: flex;
             justify-content: space-between;
             font-size: 0.75rem;
-            color: rgba(0, 255, 204, 0.5);
-            border-top: 1px solid rgba(0, 255, 204, 0.2);
+            color: rgba(255, 183, 0, 0.5);
+            border-top: 1px solid rgba(255, 183, 0, 0.2);
             padding-top: 8px;
         }
     </style>
@@ -217,32 +222,32 @@
 <body>
 
     <header>
-        <div class="logo">STORMX // AI</div>
-        <div class="status-badge" id="statusBadge">SİSTEM HAZIRDIR</div>
+        <div class="logo">J.A.R.V.I.S. // STARK</div>
+        <div class="status-badge" id="statusBadge">SYSTEM ONLINE</div>
         <div class="header-badges">
-            <div class="status-badge">API: CONNECTED</div>
-            <div class="status-badge">SECURE_HUD_V2</div>
+            <div class="status-badge">MARK LXXXV</div>
+            <div class="status-badge">SECURE_LINK</div>
         </div>
     </header>
 
     <aside>
-        <div class="sidebar-title">SİSTEM MODULLARI</div>
+        <div class="sidebar-title">SYSTEM MODULES</div>
         <div class="metric-card">
-            <div class="metric-label">REACTIVE ENGINE</div>
-            <div class="metric-value" style="color: #00ffcc;">AKTİV</div>
+            <div class="metric-label">ARC REACTOR</div>
+            <div class="metric-value" style="color: #ffb700;">100% STABLE</div>
         </div>
         <div class="metric-card">
-            <div class="metric-label">SƏS TANINMA (AZ)</div>
-            <div class="metric-value" id="micStatusIndicator" style="color: #ff0055;">GÖZLƏYİR</div>
+            <div class="metric-label">VOICE RECOGNITION (AZ)</div>
+            <div class="metric-value" id="micStatusIndicator" style="color: #ff2a00;">STANDBY</div>
         </div>
         <div class="metric-card">
-            <div class="metric-label">VERİLƏNLƏR BAZASI</div>
-            <div class="metric-value">SYNC OK</div>
+            <div class="metric-label">DIAGNOSTICS</div>
+            <div class="metric-value">ALL CLEAR</div>
         </div>
 
-        <div class="sidebar-title" style="margin-top: 10px;">TEZ ƏMRLƏR</div>
-        <button class="hud-btn" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="sendQuickPrompt('Sistem statusunu yoxla')">Statusu Yoxla</button>
-        <button class="hud-btn" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="sendQuickPrompt('Kiməsən sən?')">Özünü Tanıt</button>
+        <div class="sidebar-title" style="margin-top: 10px;">QUICK COMMANDS</div>
+        <button class="hud-btn" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="sendQuickPrompt('Sistem statusunu yoxla')">Check Status</button>
+        <button class="hud-btn" style="width: 100%; font-size: 0.8rem; padding: 8px;" onclick="sendQuickPrompt('Kiməsən sən?')">Protocol Info</button>
     </aside>
 
     <main>
@@ -253,11 +258,11 @@
         </div>
 
         <div class="output-box" id="outputBox">
-            Salam! Mən STORMX AI-yam. Tam genişləndirilmiş HUD interfeysi və səs modulu ilə işləməyə hazıram. Səslə və ya mətnlə əmr verə bilərsən.
+            Salam cənab Stark. J.A.R.V.I.S. sistemləri tam aktivdir. Əmrlərinizi gözləyirəm.
         </div>
 
         <div class="control-panel">
-            <input type="text" id="userInput" class="chat-input" placeholder="Əmr və ya mesaj daxil edin..." autocomplete="off">
+            <input type="text" id="userInput" class="chat-input" placeholder="Əmr daxil edin..." autocomplete="off">
             <button class="hud-btn" id="sendBtn">Göndər</button>
             <button class="hud-btn" id="micBtn">Dinlə</button>
             <button class="hud-btn" id="speakBtn">Oxu</button>
@@ -265,8 +270,8 @@
     </main>
 
     <footer>
-        <div>STORMX AI Interface &copy; 2026</div>
-        <div>SECURE ENCRYPTION ACTIVE</div>
+        <div>STARK INDUSTRIES &copy; 2026</div>
+        <div>MARK LXXXV INTERFACE</div>
     </footer>
 
     <script>
@@ -281,9 +286,8 @@
 
         let recognition = null;
         let isListening = false;
-        let lastResponseText = "Salam! Mən STORMX AI-yam. Tam genişləndirilmiş HUD interfeysi və səs modulu ilə işləməyə hazıram.";
+        let lastResponseText = "Salam cənab Stark. J.A.R.V.I.S. sistemləri tam aktivdir.";
 
-        // Text-to-Speech (Səsləndirmə)
         function speakText(text) {
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
@@ -295,7 +299,6 @@
             }
         }
 
-        // Speech Recognition Setup (Azərbaycan dili)
         if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             recognition = new SpeechRecognition();
@@ -305,12 +308,12 @@
 
             recognition.onstart = function() {
                 isListening = true;
-                statusBadge.innerText = 'DİNLƏNİLİR...';
-                micStatusIndicator.innerText = 'DİNLƏNİLİR';
-                micStatusIndicator.style.color = '#ff0055';
+                statusBadge.innerText = 'LISTENING...';
+                micStatusIndicator.innerText = 'ACTIVE';
+                micStatusIndicator.style.color = '#ff2a00';
                 micBtn.classList.add('active');
-                micBtn.innerText = 'Dayandır';
-                vizText.style.background = 'rgba(255, 0, 85, 0.3)';
+                micBtn.innerText = 'Stop';
+                vizText.style.background = 'rgba(255, 42, 0, 0.4)';
             };
 
             recognition.onresult = function(event) {
@@ -320,7 +323,7 @@
             };
 
             recognition.onerror = function(event) {
-                statusBadge.innerText = 'XƏTA BAŞ VERDİ';
+                statusBadge.innerText = 'ERROR';
                 stopListening();
             };
 
@@ -328,7 +331,7 @@
                 stopListening();
             };
         } else {
-            statusBadge.innerText = 'SƏS DƏSTƏKLƏNMİR';
+            statusBadge.innerText = 'NO SPEECH SUPPORT';
             micBtn.disabled = true;
         }
 
@@ -344,12 +347,12 @@
 
         function stopListening() {
             isListening = false;
-            statusBadge.innerText = 'SİSTEM HAZIRDIR';
-            micStatusIndicator.innerText = 'GÖZLƏYİR';
-            micStatusIndicator.style.color = '#ff0055';
+            statusBadge.innerText = 'SYSTEM ONLINE';
+            micStatusIndicator.innerText = 'STANDBY';
+            micStatusIndicator.style.color = '#ff2a00';
             micBtn.classList.remove('active');
             micBtn.innerText = 'Dinlə';
-            vizText.style.background = 'rgba(0, 255, 204, 0.1)';
+            vizText.style.background = 'rgba(255, 183, 0, 0.1)';
         }
 
         micBtn.addEventListener('click', () => {
@@ -366,13 +369,13 @@
             let response = "";
 
             if (query.includes('necəsən') || query.includes('neçəsən')) {
-                response = "Sistemlər tam gücü ilə işləyir. Mən əlaqəyə hazıram!";
+                response = "Bütün sistemlər əla işləyir, cənab.";
             } else if (query.includes('adın nədir')) {
-                response = "Mənim adım STORMX AI-dır. Sənin rəqəmsal HUD köməkçinim.";
+                response = "Mənim adım J.A.R.V.I.S., Stark Sənayesinin süni intellekt köməkçisiyəm.";
             } else if (query.includes('status')) {
-                response = "Bütün əsas modullar stabil işləyir!";
+                response = "Ark reaktoru stabildir, təhlükəsizlik səviyyəsi maksimumdur.";
             } else {
-                response = `"${inputText}" əmriniz qəbul olundu. Məlumatlar emal edilir.`;
+                response = `"${inputText}" əmriniz qəbul olundu, cənab.`;
             }
 
             lastResponseText = response;
