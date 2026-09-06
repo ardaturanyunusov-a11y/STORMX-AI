@@ -580,30 +580,37 @@
         shutdownBtn.addEventListener('click', () => {
             isOnline = false;
             document.getElementById('onlineDot').style.backgroundColor = '#ff3333';
-            document.getElementById('onlineDotstyle').boxShadow = '0 0 8px #ff3333';
+            document.getElementById('onlineDot').style.boxShadow = '0 0 8px #ff3333';
             document.getElementById('onlineText').innerText = 'OFFLINE';
             statusMessage.innerText = '🔴 SİSTEM SÖNDÜRÜLDÜ.';
             hudVisualizer.style.opacity = '0.2';
             outputBox.innerHTML += `<br><br><b>SYS:</b> Sistem söndürüldü.`;
         });
 
-        // AI Command Processor
-        function processCommand(text) {
+        // Improved AI Command Processor
+        async function processCommand(text) {
             if (!isOnline) return;
-            const query = text.toLowerCase();
-            let reply = "";
-            if (query.includes('necəsən')) {
-                reply = "Sistemlər maksimum səviyyədə işləyir, hər şey qaydasındadır.";
-            } else if (query.includes('adın nədir')) {
-                reply = "Mən BUTA AI, qabaqcıl neyron intellekt sistemiyəm.";
-            } else {
-                reply = `Əmr qəbul olundu: "${text}". Emal edilir...`;
-            }
             
-            outputBox.innerHTML += `<br><br><b>Siz:</b> ${text}<br><b>SYS:</b> ${reply}`;
+            outputBox.innerHTML += `<br><br><b>Siz:</b> ${text}<br><b>SYS:</b> Düşünülür...`;
             outputBox.scrollTop = outputBox.scrollHeight;
-            statusMessage.innerText = `🟢 ${reply}`;
-            
+            statusMessage.innerText = `🟡 Emal edilir...`;
+
+            let reply = "";
+            const query = text.toLowerCase();
+
+            if (query.includes('necəsən') || query.includes('salam')) {
+                reply = "Salam! Mən BUTA AI sistemiyəm. Bütün neyron strukturlar aktivdir, sizə necə kömək edə bilərəm?";
+            } else if (query.includes('adın nədir')) {
+                reply = "Mən BUTA AI - Qabaqcıl Neyron İntellekt Sistemiyəm.";
+            } else {
+                reply = `Analiz tamamlandı. "${text}" üzrə əmr sistemi tərəfindən icra olundu.`;
+            }
+
+            // Replace the "Düşünülür..." line with actual reply
+            outputBox.innerHTML = outputBox.innerHTML.replace('<b>SYS:</b> Düşünülür...', `<b>SYS:</b> ${reply}`);
+            outputBox.scrollTop = outputBox.scrollHeight;
+            statusMessage.innerText = `🟢 Hazır. Dinləyirəm...`;
+
             if ('speechSynthesis' in window) {
                 const utterance = new SpeechSynthesisUtterance(reply);
                 utterance.lang = 'az-AZ';
