@@ -18,9 +18,9 @@ export default async function handler(req, res) {
             parts: [{ text: `Sən BUTA AI-san. Cari seçilmiş dil budur: "${selectedLang}". Qısa, səliqəli və texniki dildə cavab ver.` }]
         };
 
-        // İstifadəçinin göndərdiyi bütün tarixçəni (bazanı) bura yığırıq
         const fullContents = [systemInstruction, ...(Array.isArray(history) ? history : [])];
 
+        // Model adını birbaşa 'gemini-1.5-flash' və ya stabil versiya olaraq yazırıq
         const upstream = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
             {
@@ -31,6 +31,11 @@ export default async function handler(req, res) {
         );
 
         const data = await upstream.json();
+        
+        if (data.error) {
+            return res.status(500).json({ error: data.error.message || 'Gemini API xətası' });
+        }
+
         return res.status(200).json(data);
     } catch (error) {
         return res.status(500).json({ error: 'Server xətası' });
