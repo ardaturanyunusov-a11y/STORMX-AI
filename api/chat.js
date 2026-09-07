@@ -3,28 +3,26 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        return res.status(500).json({ error: 'API key not configured' });
-    }
-
     try {
-        const { contents, language } = req.body;
-        
-        // Seçilmiş dili təyin edirik (əgər göndərilməyibsə standart AZ olur)
+        const { history, language } = req.body;
+        const apiKey = process.env.GEMINI_API_KEY;
+
+        if (!apiKey) {
+            return res.status(500).json({ error: 'API key not configured' });
+        }
+
         const selectedLang = language || 'AZ';
-        
+
         const systemInstruction = {
             role: "user",
-            parts: [{ text: `Sən BUTA AI-san. Cari seçilmiş dil budur: "${selectedLang}". 
-1. Əgər istifadəçinin yazdığı mətn seçilmiş dilə uyğundursa, yalnız və yalnız həmin seçilmiş dildə cavab ver.
-2. Əgər istifadəçi seçilmiş dildən başqa bir dildə yazarsa, süni intellekt heç bir digər cavab vermədən dərhal mütləq bu cümləni işlətsin: "Xahiş edirik, yuxarıdan danışdığınız dili seçin." (Əgər seçilmiş dil İngilis dilidirsə "Please select the language you are speaking from above", Rus dilidirsə "Пожалуйста, выберите язык, на котором вы говорите, сверху", Azərbaycan dilidirsə "Xahiş edirik, yuxarıdan danışdığınız dili seçin").` }]
+            parts: [{ text: `Sən BUTA AI-san. Cari seçilmiş dil budur: "${selectedLang}". Qısa, səliqəli və texniki dildə cavab ver.` }]
         };
 
-        const fullContents = [systemInstruction, ...(Array.isArray(contents) ? contents : [{ role: "user", parts: [{ text: contents }] }])];
+        // İstifadəçinin göndərdiyi bütün tarixçəni (bazanı) bura yığırıq
+        const fullContents = [systemInstruction, ...(Array.isArray(history) ? history : [])];
 
         const upstream = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -33,13 +31,8 @@ export default async function handler(req, res) {
         );
 
         const data = await upstream.json();
-        
-        if (!upstream.ok) {
-            return res.status(upstream.status).json(data);
-        }
-
         return res.status(200).json(data);
-    } catch (err) {
-        return res.status(500).json({ error: err.message });
+    } catch (error) {
+        return res.status(500).json({ error: 'Server xətası' });
     }
 }
