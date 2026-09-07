@@ -8,15 +8,21 @@ export default async function handler(req, res) {
         const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {
-            return res.status(500).json({ error: 'API key not configured' });
+            return res.status(500).json({ error: 'API key tapılmadı' });
         }
+
+        // Tarixçənin strukturunu təmizləyirik ki, API xəta verməsin
+        const cleanHistory = history.map(item => ({
+            role: item.role === 'model' ? 'model' : 'user',
+            parts: item.parts.map(p => ({ text: p.text }))
+        }));
 
         const upstream = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: history })
+                body: JSON.stringify({ contents: cleanHistory })
             }
         );
 
