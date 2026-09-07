@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BUTA AI - Advanced Neural Intelligence System</title>
     <style>
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             background-color: #020b0e;
             color: #ffaa00;
@@ -23,7 +19,6 @@
             padding: 15px;
         }
 
-        /* Header */
         header {
             grid-column: 1 / -1;
             display: flex;
@@ -37,315 +32,65 @@
 
         .header-bg-watermark {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 2.2rem;
-            font-weight: bold;
+            font-size: 2.2rem; font-weight: bold;
             color: rgba(255, 170, 0, 0.05);
             letter-spacing: 12px;
-            z-index: 0;
-            pointer-events: none;
-            white-space: nowrap;
-            text-transform: uppercase;
+            z-index: 0; pointer-events: none;
+            white-space: nowrap; text-transform: uppercase;
         }
 
-        .header-left, .header-center, .header-right {
-            position: relative;
-            z-index: 1;
-        }
+        .header-left, .header-center, .header-right { position: relative; z-index: 1; }
+        .header-left { font-size: 0.75rem; letter-spacing: 1px; color: #ffaa00; }
+        .header-center { text-align: center; }
+        .logo-title { font-size: 1.4rem; font-weight: bold; letter-spacing: 4px; color: #ffaa00; text-shadow: 0 0 10px rgba(255, 170, 0, 0.4); }
+        .logo-sub { font-size: 0.65rem; letter-spacing: 1.5px; color: #d48806; margin-top: 2px; }
+        .header-right { font-size: 0.75rem; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
+        .online-dot { width: 8px; height: 8px; background-color: #ffaa00; border-radius: 50%; box-shadow: 0 0 8px #ffaa00; }
 
-        .header-left {
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            color: #ffaa00;
-        }
-        .header-center {
-            text-align: center;
-        }
-        .logo-title {
-            font-size: 1.4rem;
-            font-weight: bold;
-            letter-spacing: 4px;
-            color: #ffaa00;
-            text-shadow: 0 0 10px rgba(255, 170, 0, 0.4);
-        }
-        .logo-sub {
-            font-size: 0.65rem;
-            letter-spacing: 1.5px;
-            color: #d48806;
-            margin-top: 2px;
-        }
-        .header-right {
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .online-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #ffaa00;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #ffaa00;
-        }
-
-        /* Left Panel */
-        aside.left-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            overflow-y: auto;
-        }
-        .panel-box {
-            background: rgba(0, 15, 20, 0.4);
-            border: 1px solid rgba(255, 170, 0, 0.25);
-            border-radius: 4px;
-            padding: 12px;
-        }
-        .box-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            border-bottom: 1px dashed rgba(255, 170, 0, 0.2);
-            padding-bottom: 4px;
-            letter-spacing: 1px;
-            color: #d48806;
-            margin-bottom: 8px;
-        }
+        aside.left-panel { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; }
+        .panel-box { background: rgba(0, 15, 20, 0.4); border: 1px solid rgba(255, 170, 0, 0.25); border-radius: 4px; padding: 12px; }
+        .box-title { font-size: 0.7rem; text-transform: uppercase; border-bottom: 1px dashed rgba(255, 170, 0, 0.2); padding-bottom: 4px; letter-spacing: 1px; color: #d48806; margin-bottom: 8px; }
         
-        .time-display {
-            font-size: 1.8rem;
-            font-weight: bold;
-            letter-spacing: 2px;
-            color: #00ffff;
-            text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
-        }
-        .time-display span {
-            font-size: 1.1rem;
-            color: #ffaa00;
-        }
-        .date-display {
-            font-size: 0.7rem;
-            color: rgba(255, 170, 0, 0.8);
-            margin-top: 4px;
-            letter-spacing: 1px;
-        }
+        .time-display { font-size: 1.8rem; font-weight: bold; letter-spacing: 2px; color: #00ffff; text-shadow: 0 0 8px rgba(0, 255, 255, 0.4); }
+        .time-display span { font-size: 1.1rem; color: #ffaa00; }
+        .date-display { font-size: 0.7rem; color: rgba(255, 170, 0, 0.8); margin-top: 4px; letter-spacing: 1px; }
 
-        .weather-temp {
-            font-size: 1.6rem;
-            font-weight: bold;
-            color: #ffaa00;
-        }
-        .weather-info {
-            font-size: 0.72rem;
-            color: rgba(255, 170, 0, 0.8);
-            margin-top: 4px;
-            line-height: 1.4;
-        }
+        .weather-temp { font-size: 1.6rem; font-weight: bold; color: #ffaa00; }
+        .weather-info { font-size: 0.72rem; color: rgba(255, 170, 0, 0.8); margin-top: 4px; line-height: 1.4; }
 
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.72rem;
-            margin-bottom: 4px;
-        }
-        .stat-bar {
-            width: 100%;
-            height: 5px;
-            background: rgba(255, 170, 0, 0.1);
-            border: 1px solid rgba(255, 170, 0, 0.3);
-            border-radius: 2px;
-            margin-bottom: 8px;
-            overflow: hidden;
-        }
-        .stat-fill {
-            height: 100%;
-            background: #ffaa00;
-            box-shadow: 0 0 6px #ffaa00;
-            transition: width 0.5s ease;
-        }
-        .network-speed {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.68rem;
-            margin-top: 6px;
-        }
+        .stat-row { display: flex; justify-content: space-between; font-size: 0.72rem; margin-bottom: 4px; }
+        .stat-bar { width: 100%; height: 5px; background: rgba(255, 170, 0, 0.1); border: 1px solid rgba(255, 170, 0, 0.3); border-radius: 2px; margin-bottom: 8px; overflow: hidden; }
+        .stat-fill { height: 100%; background: #ffaa00; box-shadow: 0 0 6px #ffaa00; transition: width 0.5s ease; }
+        .network-speed { display: flex; justify-content: space-between; font-size: 0.68rem; margin-top: 6px; }
 
-        /* Center Main Stage */
-        main.center-panel {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 10, 15, 0.3);
-            border: 1px solid rgba(255, 170, 0, 0.2);
-            border-radius: 4px;
-            padding: 20px;
-            position: relative;
-        }
-        .hud-visualizer {
-            width: 220px;
-            height: 220px;
-            border: 1px dashed rgba(0, 255, 255, 0.4);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            margin: auto;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.05);
-            animation: spin 20s linear infinite;
-        }
-        .hud-core {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #ff5500, #ffaa00);
-            border-radius: 50%;
-            box-shadow: 0 0 15px #ffaa00;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        main.center-panel { display: flex; flex-direction: column; justify-content: space-between; align-items: center; background: rgba(0, 10, 15, 0.3); border: 1px solid rgba(255, 170, 0, 0.2); border-radius: 4px; padding: 20px; position: relative; }
+        .hud-visualizer { width: 220px; height: 220px; border: 1px dashed rgba(0, 255, 255, 0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; margin: auto; animation: spin 20s linear infinite; }
+        .hud-core { width: 40px; height: 40px; background: linear-gradient(135deg, #ff5500, #ffaa00); border-radius: 50%; box-shadow: 0 0 15px #ffaa00; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .status-message {
-            font-size: 0.8rem;
-            letter-spacing: 1px;
-            color: #ffaa00;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .control-dock {
-            display: flex;
-            gap: 15px;
-            background: rgba(0, 15, 20, 0.8);
-            border: 1px solid rgba(255, 170, 0, 0.3);
-            padding: 8px 20px;
-            border-radius: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-        .dock-btn {
-            background: none;
-            border: none;
-            color: #ffaa00;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.72rem;
-            cursor: pointer;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            transition: all 0.3s;
-        }
-        .dock-btn:hover {
-            background: rgba(255, 170, 0, 0.15);
-            color: #00ffff;
-        }
-        .dock-btn.active {
-            background: rgba(0, 255, 255, 0.2);
-            color: #00ffff;
-            box-shadow: 0 0 8px rgba(0,255,255,0.4);
-        }
-        .dock-btn.shutdown {
-            color: #ff3333;
-        }
-        .dock-btn.shutdown:hover {
-            background: rgba(255, 51, 51, 0.2);
-        }
+        .status-message { font-size: 0.8rem; letter-spacing: 1px; color: #ffaa00; text-align: center; margin-bottom: 15px; }
+        .control-dock { display: flex; gap: 15px; background: rgba(0, 15, 20, 0.8); border: 1px solid rgba(255, 170, 0, 0.3); padding: 8px 20px; border-radius: 20px; flex-wrap: wrap; justify-content: center; }
+        .dock-btn { background: none; border: none; color: #ffaa00; font-family: 'Courier New', Courier, monospace; font-size: 0.72rem; cursor: pointer; letter-spacing: 1px; display: flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 4px; transition: all 0.3s; }
+        .dock-btn:hover { background: rgba(255, 170, 0, 0.15); color: #00ffff; }
+        .dock-btn.active { background: rgba(0, 255, 255, 0.2); color: #00ffff; box-shadow: 0 0 8px rgba(0,255,255,0.4); }
+        .dock-btn.shutdown { color: #ff3333; }
 
-        /* Right Sidebar */
-        aside.right-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .right-top-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.72rem;
-            border-bottom: 1px solid rgba(255, 170, 0, 0.3);
-            padding-bottom: 5px;
-            letter-spacing: 1px;
-        }
-        .conversation-box {
-            flex: 1;
-            background: rgba(0, 10, 15, 0.5);
-            border: 1px solid rgba(255, 170, 0, 0.25);
-            border-radius: 4px;
-            padding: 12px;
-            font-size: 0.78rem;
-            line-height: 1.4;
-            color: #d4f8ff;
-            overflow-y: auto;
-            min-height: 200px;
-        }
-        .chat-input-area {
-            display: flex;
-            gap: 8px;
-        }
-        .chat-input {
-            flex: 1;
-            background: rgba(0, 15, 20, 0.6);
-            border: 1px solid rgba(255, 170, 0, 0.3);
-            border-radius: 4px;
-            padding: 8px 10px;
-            color: #ffaa00;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.75rem;
-            outline: none;
-        }
-        .send-btn {
-            background: rgba(255, 170, 0, 0.15);
-            border: 1px solid #ffaa00;
-            color: #ffaa00;
-            padding: 0 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            font-size: 0.72rem;
-        }
-        .send-btn:hover {
-            background: rgba(255, 170, 0, 0.3);
-        }
+        aside.right-panel { display: flex; flex-direction: column; gap: 15px; height: 100%; overflow: hidden; }
+        .right-top-header { display: flex; justify-content: space-between; font-size: 0.72rem; border-bottom: 1px solid rgba(255, 170, 0, 0.3); padding-bottom: 5px; letter-spacing: 1px; }
+        .conversation-box { flex: 1; background: rgba(0, 10, 15, 0.6); border: 1px solid rgba(255, 170, 0, 0.25); border-radius: 4px; padding: 12px; font-size: 0.78rem; line-height: 1.5; color: #d4f8ff; overflow-y: auto; scroll-behavior: smooth; max-height: calc(100vh - 180px); white-space: pre-wrap; word-break: break-word; }
+        .chat-input-area { display: flex; gap: 8px; }
+        .chat-input { flex: 1; background: rgba(0, 15, 20, 0.6); border: 1px solid rgba(255, 170, 0, 0.3); border-radius: 4px; padding: 8px 10px; color: #ffaa00; font-family: 'Courier New', Courier, monospace; font-size: 0.75rem; outline: none; }
+        .send-btn { background: rgba(255, 170, 0, 0.15); border: 1px solid #ffaa00; color: #ffaa00; padding: 0 12px; border-radius: 4px; cursor: pointer; font-family: 'Courier New', Courier, monospace; font-weight: bold; font-size: 0.72rem; }
+        .send-btn:hover { background: rgba(255, 170, 0, 0.3); }
 
-        /* Footer */
-        footer {
-            grid-column: 1 / -1;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.68rem;
-            color: rgba(255, 170, 0, 0.5);
-            border-top: 1px solid rgba(255, 170, 0, 0.2);
-            padding-top: 6px;
-            letter-spacing: 1px;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
+        footer { grid-column: 1 / -1; display: flex; justify-content: space-between; font-size: 0.68rem; color: rgba(255, 170, 0, 0.5); border-top: 1px solid rgba(255, 170, 0, 0.2); padding-top: 6px; letter-spacing: 1px; flex-wrap: wrap; gap: 5px; }
 
         @media (max-width: 1024px) {
-            body {
-                height: auto;
-                overflow-y: auto;
-                grid-template-columns: 1fr;
-                grid-template-rows: auto;
-                display: flex;
-                flex-direction: column;
-            }
-            main.center-panel {
-                min-height: 350px;
-            }
-            aside.right-panel {
-                min-height: 400px;
-            }
+            body { height: auto; overflow-y: auto; grid-template-columns: 1fr; grid-template-rows: auto; display: flex; flex-direction: column; }
+            main.center-panel { min-height: 350px; }
+            aside.right-panel { min-height: 400px; }
         }
     </style>
 </head>
@@ -353,10 +98,7 @@
 
     <header>
         <div class="header-bg-watermark">SOLO STUDIO</div>
-        <div class="header-left">
-            SYSTEM SETTINGS<br>
-            <span style="color: #ffaa00;">VOICE CORE • WINDOWS</span>
-        </div>
+        <div class="header-left">SYSTEM SETTINGS<br><span style="color: #ffaa00;">VOICE CORE • WINDOWS</span></div>
         <div class="header-center">
             <div class="logo-title">BUTA AI</div>
             <div class="logo-sub">Advanced Neural Intelligence System</div>
@@ -369,51 +111,25 @@
     <aside class="left-panel">
         <div class="panel-box">
             <div class="box-title">TIME</div>
-            <div class="time-display" id="clock">00:17<span>:47</span></div>
-            <div class="date-display" id="dateText">22 AUGUST 2026<br>SATURDAY</div>
+            <div class="time-display" id="clock">00:00<span>:00</span></div>
+            <div class="date-display" id="dateText">YÜKLƏNİR...</div>
         </div>
-
         <div class="panel-box">
             <div class="box-title">WEATHER • BAKU</div>
-            <div class="weather-temp">26°C</div>
-            <div class="weather-info">
-                • partly cloudy<br>
-                • hissədilən 28 dərəcə<br>
-                • nem yüzde 45
-            </div>
+            <div class="weather-temp" id="weatherTemp">--°C</div>
+            <div class="weather-info" id="weatherInfo">• Məlumat yenilənir...</div>
         </div>
-
         <div class="panel-box">
             <div class="box-title">SYSTEM STATUS</div>
-            <div class="stat-row">
-                <span>UPTIME</span>
-                <span id="uptimeCounter">00:00:26</span>
-            </div>
-            
-            <div class="stat-row">
-                <span>CPU</span>
-                <span id="cpuVal">12%</span>
-            </div>
+            <div class="stat-row"><span>UPTIME</span><span id="uptimeCounter">00:00:00</span></div>
+            <div class="stat-row"><span>CPU</span><span id="cpuVal">12%</span></div>
             <div class="stat-bar"><div class="stat-fill" id="cpuBar" style="width: 12%;"></div></div>
-
-            <div class="stat-row">
-                <span>RAM</span>
-                <span id="ramVal">74%</span>
-            </div>
+            <div class="stat-row"><span>RAM</span><span id="ramVal">74%</span></div>
             <div class="stat-bar"><div class="stat-fill" id="ramBar" style="width: 74%;"></div></div>
-
-            <div class="stat-row">
-                <span>DISK</span>
-                <span id="diskVal">57%</span>
-            </div>
+            <div class="stat-row"><span>DISK</span><span id="diskVal">57%</span></div>
             <div class="stat-bar"><div class="stat-fill" id="diskBar" style="width: 57%;"></div></div>
-
-            <div class="stat-row">
-                <span>BATTERY</span>
-                <span id="batteryVal">82%</span>
-            </div>
+            <div class="stat-row"><span>BATTERY</span><span id="batteryVal">82%</span></div>
             <div class="stat-bar"><div class="stat-fill" id="batteryBar" style="width: 82%; background: #00ffaa; box-shadow: 0 0 6px #00ffaa;"></div></div>
-
             <div class="network-speed">
                 <span id="netUp" style="color: #00ffaa;">▲ 34.2 KB/s</span>
                 <span id="netDown" style="color: #ff3333;">▼ 18.1 KB/s</span>
@@ -425,11 +141,7 @@
         <div class="hud-visualizer" id="hudVisualizer">
             <div class="hud-core">⚡</div>
         </div>
-
-        <div class="status-message" id="statusMessage">
-            🟡 BUTA AI Hazır. Dinləyirəm...
-        </div>
-
+        <div class="status-message" id="statusMessage">🟡 BUTA AI Hazır. Dinləyirəm...</div>
         <div class="control-dock">
             <button class="dock-btn" id="micToggleBtn">🎤 LIVE</button>
             <button class="dock-btn" id="pauseBtn">⏸ PAUSE</button>
@@ -440,14 +152,10 @@
 
     <aside class="right-panel">
         <div class="right-top-header">
-            <span style="color: #ffaa00; border-bottom: 1px solid #ffaa00; padding-bottom: 2px;">CONVERSATION</span>
-            <span style="color: rgba(255,170,0,0.5); cursor: pointer;">THINKING</span>
+            <span style="color: #ffaa00; border-bottom: 1px solid #ffaa00; padding-bottom: 2px;">CONVERSATION HISTORY</span>
+            <span style="color: rgba(255,170,0,0.5); cursor: pointer;" id="clearChat">CLEAR</span>
         </div>
-
-        <div class="conversation-box" id="outputBox">
-            SYS: BUTA AI hazır. Dinləyirəm...
-        </div>
-
+        <div class="conversation-box" id="outputBox">SYS: BUTA AI hazır. Dinləyirəm...</div>
         <div class="chat-input-area">
             <input type="text" id="userInput" class="chat-input" placeholder="Əmr yazın və ya səslə deyin..." autocomplete="off">
             <button class="send-btn" id="sendBtn">SEND ►</button>
@@ -460,9 +168,24 @@
     </footer>
 
     <script>
-        let seconds = 26;
+        let seconds = 0;
         let isPaused = false;
         let isOnline = true;
+        let chatHistory = [];
+
+        function updateRealTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const secs = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').innerHTML = `${hours}:${minutes}<span>:${secs}</span>`;
+
+            const optionsDate = { day: 'numeric', month: 'long', year: 'numeric' };
+            const optionsDay = { weekday: 'long' };
+            document.getElementById('dateText').innerHTML = `${now.toLocaleDateString('en-GB', optionsDate).toUpperCase()}<br>${now.toLocaleDateString('en-GB', optionsDay).toUpperCase()}`;
+        }
+        setInterval(updateRealTime, 1000);
+        updateRealTime();
 
         setInterval(() => {
             if (!isPaused && isOnline) {
@@ -473,6 +196,21 @@
                 document.getElementById('uptimeCounter').innerText = `${h}:${m}:${s}`;
             }
         }, 1000);
+
+        async function fetchBakuWeather() {
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=40.4093&current=temperature_2m,relative_humidity_2m,apparent_temperature&wind_speed_unit=ms');
+                const data = await res.json();
+                if(data && data.current) {
+                    document.getElementById('weatherTemp').innerText = `${Math.round(data.current.temperature_2m)}°C`;
+                    document.getElementById('weatherInfo').innerHTML = `• Bakı hava durumu<br>• Hissədilən: ${Math.round(data.current.apparent_temperature)}°C<br>• Rütubət: %${data.current.relative_humidity_2m}`;
+                }
+            } catch(e) {
+                document.getElementById('weatherTemp').innerText = '26°C';
+                document.getElementById('weatherInfo').innerHTML = `• Baku, Azerbaijan<br>• hissədilən 28 dərəcə<br>• nem yüzde 45`;
+            }
+        }
+        fetchBakuWeather();
 
         if ('getBattery' in navigator) {
             navigator.getBattery().then(battery => {
@@ -488,18 +226,12 @@
 
         setInterval(() => {
             if (!isPaused && isOnline) {
-                let cpu = Math.floor(Math.random() * 15) + 10;
-                document.getElementById('cpuVal').innerText = cpu + '%';
-                document.getElementById('cpuBar').style.width = cpu + '%';
-
-                let ram = Math.floor(Math.random() * 5) + 72;
-                document.getElementById('ramVal').innerText = ram + '%';
-                document.getElementById('ramBar').style.width = ram + '%';
-
-                let upSpeed = (Math.random() * 10 + 30).toFixed(1);
-                let downSpeed = (Math.random() * 5 + 15).toFixed(1);
-                document.getElementById('netUp').innerText = `▲ ${upSpeed} KB/s`;
-                document.getElementById('netDown').innerText = `▼ ${downSpeed} KB/s`;
+                document.getElementById('cpuVal').innerText = (Math.floor(Math.random() * 15) + 10) + '%';
+                document.getElementById('cpuBar').style.width = document.getElementById('cpuVal').innerText;
+                document.getElementById('ramVal').innerText = (Math.floor(Math.random() * 5) + 72) + '%';
+                document.getElementById('ramBar').style.width = document.getElementById('ramVal').innerText;
+                document.getElementById('netUp').innerText = `▲ ${(Math.random() * 10 + 30).toFixed(1)} KB/s`;
+                document.getElementById('netDown').innerText = `▼ ${(Math.random() * 5 + 15).toFixed(1)} KB/s`;
             }
         }, 2500);
 
@@ -507,170 +239,43 @@
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         const statusMessage = document.getElementById('statusMessage');
-        const micToggleBtn = document.getElementById('micToggleBtn');
-        const pauseBtn = document.getElementById('pauseBtn');
-        const camBtn = document.getElementById('camBtn');
-        const shutdownBtn = document.getElementById('shutdownBtn');
-        const hudVisualizer = document.getElementById('hudVisualizer');
+        const clearChatBtn = document.getElementById('clearChat');
 
-        let recognition = null;
-        let listening = false;
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            recognition = new SpeechRecognition();
-            recognition.lang = 'az-AZ';
-            recognition.continuous = false;
-            recognition.interimResults = false;
-
-            recognition.onresult = (event) => {
-                const speechText = event.results[0][0].transcript;
-                userInput.value = speechText;
-                processCommand(speechText);
-            };
-
-            recognition.onend = () => {
-                listening = false;
-                micToggleBtn.classList.remove('active');
-                micToggleBtn.innerText = '🎤 LIVE';
-            };
-        }
-
-        micToggleBtn.addEventListener('click', () => {
-            if (!isOnline) return;
-            if (!recognition) {
-                alert("Brauzeriniz səs tanımasını dəstəkləmir.");
-                return;
-            }
-            if (!listening) {
-                try {
-                    recognition.start();
-                    listening = true;
-                    micToggleBtn.classList.add('active');
-                    micToggleBtn.innerText = '🎤 DİNLƏYİR...';
-                    statusMessage.innerText = '🟢 Mikrofon aktivdir, danışın...';
-                } catch(e) {
-                    console.error(e);
-                }
-            } else {
-                recognition.stop();
-                listening = false;
-                micToggleBtn.classList.remove('active');
-                micToggleBtn.innerText = '🎤 LIVE';
-            }
+        clearChatBtn.addEventListener('click', () => {
+            chatHistory = [];
+            outputBox.innerHTML = "SYS: Söhbət bazası sıfırlandı. Dinləyirəm...";
         });
 
-        pauseBtn.addEventListener('click', () => {
-            if (!isOnline) return;
-            isPaused = !isPaused;
-            if (isPaused) {
-                pauseBtn.classList.add('active');
-                pauseBtn.innerText = '▶ RESUME';
-                statusMessage.innerText = '⏸ Sistem fasilədədir.';
-                hudVisualizer.style.animationPlayState = 'paused';
-            } else {
-                pauseBtn.classList.remove('active');
-                pauseBtn.innerText = '⏸ PAUSE';
-                statusMessage.innerText = '🟢 BUTA AI aktivdir.';
-                hudVisualizer.style.animationPlayState = 'running';
-            }
-        });
-
-        let camActive = false;
-        let videoElement = null;
-        camBtn.addEventListener('click', async () => {
-            if (!isOnline) return;
-            if (!camActive) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                    videoElement = document.createElement('video');
-                    videoElement.srcObject = stream;
-                    videoElement.autoplay = true;
-                    videoElement.style.width = '100%';
-                    videoElement.style.height = '100%';
-                    videoElement.style.borderRadius = '50%';
-                    videoElement.style.objectFit = 'cover';
-                    
-                    hudVisualizer.innerHTML = '';
-                    hudVisualizer.appendChild(videoElement);
-                    camBtn.classList.add('active');
-                    camBtn.innerText = '📷 CAM ON';
-                    statusMessage.innerText = '📷 Kamera qoşuldu.';
-                    camActive = true;
-                } catch (err) {
-                    alert('Kameraya icazə verilmədi və ya kamera tapılmadı.');
-                }
-            } else {
-                if (videoElement && videoElement.srcObject) {
-                    let tracks = videoElement.srcObject.getTracks();
-                    tracks.forEach(track => track.stop());
-                }
-                hudVisualizer.innerHTML = '<div class="hud-core">⚡</div>';
-                camBtn.classList.remove('active');
-                camBtn.innerText = '📷 CAM';
-                statusMessage.innerText = '🟢 BUTA AI Hazır.';
-                camActive = false;
-            }
-        });
-
-        // Söndürmə və yenidən yandırma düyməsi (Toggle)
-        shutdownBtn.addEventListener('click', () => {
-            if (isOnline) {
-                isOnline = false;
-                document.getElementById('onlineDot').style.backgroundColor = '#ff3333';
-                document.getElementById('onlineDot').style.boxShadow = '0 0 8px #ff3333';
-                document.getElementById('onlineText').innerText = 'OFFLINE';
-                statusMessage.innerText = '🔴 SİSTEM SÖNDÜRÜLDÜ.';
-                hudVisualizer.style.opacity = '0.2';
-                shutdownBtn.innerText = 'POWER ON';
-                shutdownBtn.style.color = '#00ffaa';
-                outputBox.innerHTML += `<br><br><b>SYS:</b> Sistem söndürüldü.`;
-            } else {
-                isOnline = true;
-                document.getElementById('onlineDot').style.backgroundColor = '#ffaa00';
-                document.getElementById('onlineDot').style.boxShadow = '0 0 8px #ffaa00';
-                document.getElementById('onlineText').innerText = 'ONLINE';
-                statusMessage.innerText = '🟢 BUTA AI Hazır. Dinləyirəm...';
-                hudVisualizer.style.opacity = '1';
-                shutdownBtn.innerText = 'SHUTDOWN';
-                shutdownBtn.style.color = '#ff3333';
-                outputBox.innerHTML += `<br><br><b>SYS:</b> Sistem yenidən işə düşdü.`;
-            }
-            outputBox.scrollTop = outputBox.scrollHeight;
-        });
-
-        // Backend (api/chat.js) ilə əlaqə quran və Gemini cavabını səliqəli oxuyan funksiya
         async function processCommand(text) {
             if (!isOnline) return;
             
-            outputBox.innerHTML += `<br><br><b>Siz:</b> ${text}<br><b>SYS:</b> Düşünürəm...`;
+            chatHistory.push({ role: "user", parts: [{ text: text }] });
+            outputBox.innerHTML += `\n\nSiz: ${text}\nSYS: Düşünürəm...`;
             outputBox.scrollTop = outputBox.scrollHeight;
-            statusMessage.innerText = `🟡 Gemini-yə sorğu göndərilir...`;
+            statusMessage.innerText = `🟡 Sorğu emal olunur...`;
 
             let reply = "";
 
             try {
                 const response = await fetch('/api/chat', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ contents: text, language: 'AZ' })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ history: chatHistory })
                 });
 
                 const data = await response.json();
                 
-                if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
+                if (response.ok && data.candidates) {
                     reply = data.candidates[0].content.parts[0].text;
-                } else if (data.error) {
-                    reply = "Xəta baş verdi: " + (data.error.message || "Naməlum xəta");
+                    chatHistory.push({ role: "model", parts: [{ text: reply }] });
                 } else {
-                    reply = "Üzr istəyirəm, neyron şəbəkədən cavab gəlmədi.";
+                    reply = "Xəta: " + (data.error || "Naməlum xəta");
                 }
             } catch (error) {
-                reply = "Server bağlantı xətası baş verdi.";
+                reply = "Bağlantı xətası: " + error.message;
             }
 
-            outputBox.innerHTML = outputBox.innerHTML.replace('<b>SYS:</b> Düşünürəm...', `<b>SYS:</b> ${reply}`);
+            outputBox.innerHTML = outputBox.innerHTML.replace('SYS: Düşünürəm...', `SYS: ${reply}`);
             outputBox.scrollTop = outputBox.scrollHeight;
             statusMessage.innerText = `🟢 Hazır. Dinləyirəm...`;
 
@@ -690,9 +295,7 @@
         });
 
         userInput.addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') {
-                sendBtn.click();
-            }
+            if(e.key === 'Enter') sendBtn.click();
         });
     </script>
 </body>
