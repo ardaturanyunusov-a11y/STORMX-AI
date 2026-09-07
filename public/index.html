@@ -35,7 +35,6 @@
             overflow: hidden;
         }
 
-        /* Arxa fondakı Solo Studio yazısı (Watermark) */
         .header-bg-watermark {
             position: absolute;
             top: 50%;
@@ -332,7 +331,6 @@
             gap: 5px;
         }
 
-        /* Responsive Media Query for Mobile / Tablets */
         @media (max-width: 1024px) {
             body {
                 height: auto;
@@ -522,6 +520,7 @@
             recognition = new SpeechRecognition();
             recognition.lang = 'az-AZ';
             recognition.continuous = false;
+            recognition.interimResults = false;
 
             recognition.onresult = (event) => {
                 const speechText = event.results[0][0].transcript;
@@ -543,11 +542,15 @@
                 return;
             }
             if (!listening) {
-                recognition.start();
-                listening = true;
-                micToggleBtn.classList.add('active');
-                micToggleBtn.innerText = '🎤 DİNLƏYİR...';
-                statusMessage.innerText = '🟢 Mikrofon aktivdir, danışın...';
+                try {
+                    recognition.start();
+                    listening = true;
+                    micToggleBtn.classList.add('active');
+                    micToggleBtn.innerText = '🎤 DİNLƏYİR...';
+                    statusMessage.innerText = '🟢 Mikrofon aktivdir, danışın...';
+                } catch(e) {
+                    console.error(e);
+                }
             } else {
                 recognition.stop();
                 listening = false;
@@ -609,37 +612,65 @@
             }
         });
 
+        // Söndürmə və yenidən yandırma düyməsi (Toggle)
         shutdownBtn.addEventListener('click', () => {
-            isOnline = false;
-            document.getElementById('onlineDot').style.backgroundColor = '#ff3333';
-            document.getElementById('onlineDot').style.boxShadow = '0 0 8px #ff3333';
-            document.getElementById('onlineText').innerText = 'OFFLINE';
-            statusMessage.innerText = '🔴 SİSTEM SÖNDÜRÜLDÜ.';
-            hudVisualizer.style.opacity = '0.2';
-            outputBox.innerHTML += `<br><br><b>SYS:</b> Sistem söndürüldü.`;
+            if (isOnline) {
+                isOnline = false;
+                document.getElementById('onlineDot').style.backgroundColor = '#ff3333';
+                document.getElementById('onlineDot').style.boxShadow = '0 0 8px #ff3333';
+                document.getElementById('onlineText').innerText = 'OFFLINE';
+                statusMessage.innerText = '🔴 SİSTEM SÖNDÜRÜLDÜ.';
+                hudVisualizer.style.opacity = '0.2';
+                shutdownBtn.innerText = 'POWER ON';
+                shutdownBtn.style.color = '#00ffaa';
+                outputBox.innerHTML += `<br><br><b>SYS:</b> Sistem söndürüldü.`;
+            } else {
+                isOnline = true;
+                document.getElementById('onlineDot').style.backgroundColor = '#ffaa00';
+                document.getElementById('onlineDot').style.boxShadow = '0 0 8px #ffaa00';
+                document.getElementById('onlineText').innerText = 'ONLINE';
+                statusMessage.innerText = '🟢 BUTA AI Hazır. Dinləyirəm...';
+                hudVisualizer.style.opacity = '1';
+                shutdownBtn.innerText = 'SHUTDOWN';
+                shutdownBtn.style.color = '#ff3333';
+                outputBox.innerHTML += `<br><br><b>SYS:</b> Sistem yenidən işə düşdü.`;
+            }
+            outputBox.scrollTop = outputBox.scrollHeight;
         });
 
+        // Backend (api/chat.js) ilə əlaqə quran və Gemini cavabını səliqəli oxuyan funksiya
         async function processCommand(text) {
             if (!isOnline) return;
             
-            outputBox.innerHTML += `<br><br><b>Siz:</b> ${text}<br><b>SYS:</b> Düşünülür...`;
+            outputBox.innerHTML += `<br><br><b>Siz:</b> ${text}<br><b>SYS:</b> Düşünürəm...`;
             outputBox.scrollTop = outputBox.scrollHeight;
-            statusMessage.innerText = `🟡 Emal edilir...`;
+            statusMessage.innerText = `🟡 Gemini-yə sorğu göndərilir...`;
 
             let reply = "";
-            const query = text.toLowerCase();
 
-            if (query.includes('sayt düzəlt') || query.includes('sayt yarat') || query.includes('kod yaz')) {
-                reply = "Mən hələlik birbaşa sayt düzəldə bilmirəm, amma siz Solo Studio-ya dəstək verərək gələcəkdə onu da edə bilərəm!";
-            } else if (query.includes('necəsən') || query.includes('salam')) {
-                reply = "Salam! Mən BUTA AI sistemiyəm. Bütün neyron strukturlar aktivdir, sizə necə kömək edə bilərəm?";
-            } else if (query.includes('adın nədir')) {
-                reply = "Mən BUTA AI - Qabaqcıl Neyron İntellekt Sistemiyəm.";
-            } else {
-                reply = `Analiz tamamlandı. "${text}" üzrə əmr sistemi tərəfindən icra olundu.`;
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ contents: text, language: 'AZ' })
+                });
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
+                    reply = data.candidates[0].content.parts[0].text;
+                } else if (data.error) {
+                    reply = "Xəta baş verdi: " + (data.error.message || "Naməlum xəta");
+                } else {
+                    reply = "Üzr istəyirəm, neyron şəbəkədən cavab gəlmədi.";
+                }
+            } catch (error) {
+                reply = "Server bağlantı xətası baş verdi.";
             }
 
-            outputBox.innerHTML = outputBox.innerHTML.replace('<b>SYS:</b> Düşünülür...', `<b>SYS:</b> ${reply}`);
+            outputBox.innerHTML = outputBox.innerHTML.replace('<b>SYS:</b> Düşünürəm...', `<b>SYS:</b> ${reply}`);
             outputBox.scrollTop = outputBox.scrollHeight;
             statusMessage.innerText = `🟢 Hazır. Dinləyirəm...`;
 
