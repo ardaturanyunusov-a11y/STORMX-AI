@@ -8,10 +8,9 @@ export default async function handler(req, res) {
         const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {
-            return res.status(500).json({ error: 'API key tapılmadı' });
+            return res.status(500).json({ error: 'Vercel-də GEMINI_API_KEY təyin olunmayıb!' });
         }
 
-        // Tarixçənin strukturunu təmizləyirik ki, API xəta verməsin
         const cleanHistory = history.map(item => ({
             role: item.role === 'model' ? 'model' : 'user',
             parts: item.parts.map(p => ({ text: p.text }))
