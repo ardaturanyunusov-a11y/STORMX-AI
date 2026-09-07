@@ -15,12 +15,11 @@ export default async function handler(req, res) {
 
         const systemInstruction = {
             role: "user",
-            parts: [{ text: `Sən BUTA AI-san. Cari seçilmiş dil budur: "${selectedLang}". Qısa, səliqəli və texniki dildə cavab ver.` }]
+            parts: [{ text: `Sən BUTA AI adlı qabaqcıl neyron intellekt sistemisən. Qısa, səliqəli, dəqiq və texniki dildə cavab ver. Seçilmiş dil: ${selectedLang}.` }]
         };
 
         const fullContents = [systemInstruction, ...(Array.isArray(history) ? history : [])];
 
-        // Model adını birbaşa 'gemini-1.5-flash' və ya stabil versiya olaraq yazırıq
         const upstream = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
             {
