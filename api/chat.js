@@ -8,17 +8,22 @@ export default async function handler(req, res) {
         const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {
-            return res.status(500).json({ error: 'Vercel-də GEMINI_API_KEY təyin edilməyib!' });
+            return res.status(500).json({ error: 'GEMINI_API_KEY environment variable is missing on Vercel.' });
         }
 
         const selectedLang = language || 'AZ';
 
-        // Gemini v1beta üçün düzgün system_instruction formatı
+        // Tarixçəni Gemini API-nin qəbul edəcəyi təmiz formata salırıq
+        const formattedHistory = Array.isArray(history) ? history.map(item => ({
+            role: item.role === 'model' ? 'model' : 'user',
+            parts: item.parts
+        })) : [];
+
         const payload = {
             system_instruction: {
-                parts: [{ text: `Sən BUTA AI adlı qabaqcıl neyron intellekt sistemisən. Həmişə qısa, səliqəli, dəqiq və texniki dildə cavab ver. Seçilmiş dil: ${selectedLang}.` }]
+                parts: [{ text: `Sən BUTA AI adlı qabaqcıl neyron intellekt sistemisən. Qısa, səliqəli, dəqiq və texniki dildə cavab ver. Seçilmiş dil: ${selectedLang}.` }]
             },
-            contents: Array.isArray(history) ? history : []
+            contents: formattedHistory
         };
 
         const upstream = await fetch(
@@ -33,11 +38,11 @@ export default async function handler(req, res) {
         const data = await upstream.json();
         
         if (data.error) {
-            return res.status(500).json({ error: data.error.message || 'Gemini API xətası' });
+            return res.status(500).json({ error: data.error.message || 'Gemini API Error' });
         }
 
         return res.status(200).json(data);
     } catch (error) {
-        return res.status(500).json({ error: 'Server xətası: ' + error.message });
+        return res.status(500).json({ error: error.message });
     }
 }
