@@ -8,24 +8,25 @@ export default async function handler(req, res) {
         const apiKey = process.env.GEMINI_API_KEY;
 
         if (!apiKey) {
-            return res.status(500).json({ error: 'API key not configured' });
+            return res.status(500).json({ error: 'Vercel-də GEMINI_API_KEY təyin edilməyib!' });
         }
 
         const selectedLang = language || 'AZ';
 
-        const systemInstruction = {
-            role: "user",
-            parts: [{ text: `Sən BUTA AI adlı qabaqcıl neyron intellekt sistemisən. Qısa, səliqəli, dəqiq və texniki dildə cavab ver. Seçilmiş dil: ${selectedLang}.` }]
+        // Gemini v1beta üçün düzgün system_instruction formatı
+        const payload = {
+            system_instruction: {
+                parts: [{ text: `Sən BUTA AI adlı qabaqcıl neyron intellekt sistemisən. Həmişə qısa, səliqəli, dəqiq və texniki dildə cavab ver. Seçilmiş dil: ${selectedLang}.` }]
+            },
+            contents: Array.isArray(history) ? history : []
         };
-
-        const fullContents = [systemInstruction, ...(Array.isArray(history) ? history : [])];
 
         const upstream = await fetch(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ contents: fullContents })
+                body: JSON.stringify(payload)
             }
         );
 
@@ -37,6 +38,6 @@ export default async function handler(req, res) {
 
         return res.status(200).json(data);
     } catch (error) {
-        return res.status(500).json({ error: 'Server xətası' });
+        return res.status(500).json({ error: 'Server xətası: ' + error.message });
     }
 }
