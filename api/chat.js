@@ -16,9 +16,8 @@ export default async function handler(req, res) {
             parts: item.parts.map(p => ({ text: p.text }))
         }));
 
-        // BU DƏFƏ XÜSUSİ OLARAQ v1 İSTİFADƏ EDİRİK (v1beta deyil)
         const upstream = await fetch(
-            `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
