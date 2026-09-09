@@ -247,7 +247,7 @@
         });
 
         async function processCommand(text) {
-            if (!isOnline) return;
+            if (!isOnline || isPaused) return;
             
             chatHistory.push({ role: "user", parts: [{ text: text }] });
             outputBox.innerHTML += `\n\nSiz: ${text}\nSYS: Düşünürəm...`;
@@ -279,7 +279,7 @@
             outputBox.scrollTop = outputBox.scrollHeight;
             statusMessage.innerText = `🟢 Hazır. Dinləyirəm...`;
 
-            if ('speechSynthesis' in window) {
+            if ('speechSynthesis' in window && !isPaused) {
                 const utterance = new SpeechSynthesisUtterance(reply);
                 utterance.lang = 'az-AZ';
                 window.speechSynthesis.speak(utterance);
@@ -288,7 +288,7 @@
 
         sendBtn.addEventListener('click', () => {
             const val = userInput.value.trim();
-            if(val && isOnline) {
+            if(val && isOnline && !isPaused) {
                 processCommand(val);
                 userInput.value = '';
             }
@@ -296,6 +296,131 @@
 
         userInput.addEventListener('keypress', (e) => {
             if(e.key === 'Enter') sendBtn.click();
+        });
+
+        // --- BUTTON LOGIC IMPLEMENTATION ---
+
+        // 1. MIC / LIVE BUTTON
+        const micToggleBtn = document.getElementById('micToggleBtn');
+        let recognition = null;
+        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.lang = 'az-AZ';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onstart = () => {
+                statusMessage.innerText = "🎤 Dinlənilir...";
+                micToggleBtn.classList.add('active');
+            };
+
+            recognition.onresult = (event) => {
+                const speechText = event.results[0][0].transcript;
+                userInput.value = speechText;
+                processCommand(speechText);
+            };
+
+            recognition.onerror = () => {
+                statusMessage.innerText = "🟡 Səs tanıma xətası.";
+                micToggleBtn.classList.remove('active');
+            };
+
+            recognition.onend = () => {
+                statusMessage.innerText = "🟢 Hazır. Dinləyirəm...";
+                micToggleBtn.classList.remove('active');
+            };
+        }
+
+        micToggleBtn.addEventListener('click', () => {
+            if (!isOnline || isPaused) return;
+            if (recognition) {
+                try {
+                    recognition.start();
+                } catch(e) {
+                    recognition.stop();
+                }
+            } else {
+                alert("Brauzeriniz səs tanımasını dəstəkləmir.");
+            }
+        });
+
+        // 2. PAUSE BUTTON
+        const pauseBtn = document.getElementById('pauseBtn');
+        pauseBtn.addEventListener('click', () => {
+            isPaused = !isPaused;
+            if (isPaused) {
+                pauseBtn.classList.add('active');
+                statusMessage.innerText = "⏸ Sistem dayandırılıb (PAUSE)";
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            } else {
+                pauseBtn.classList.remove('active');
+                statusMessage.innerText = "🟢 Hazır. Dinləyirəm...";
+            }
+        });
+
+        // 3. CAM BUTTON
+        const camBtn = document.getElementById('camBtn');
+        let cameraStream = null;
+        let videoElement = null;
+
+        camBtn.addEventListener('click', async () => {
+            if (!cameraStream) {
+                try {
+                    cameraStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                    videoElement = document.createElement('video');
+                    videoElement.srcObject = cameraStream;
+                    videoElement.autoplay = true;
+                    videoElement.style.position = 'fixed';
+                    videoElement.style.bottom = '80px';
+                    videoElement.style.right = '20px';
+                    videoElement.style.width = '220px';
+                    videoElement.style.border = '2px solid #ffaa00';
+                    videoElement.style.borderRadius = '4px';
+                    videoElement.style.zIndex = '9999';
+                    document.body.appendChild(videoElement);
+                    camBtn.classList.add('active');
+                    statusMessage.innerText = "📷 Kamera aktivdir.";
+                } catch (err) {
+                    alert("Kameraya icazə verilmədi və ya mövcud deyil!");
+                }
+            } else {
+                cameraStream.getTracks().forEach(track => track.stop());
+                if (videoElement) videoElement.remove();
+                cameraStream = null;
+                videoElement = null;
+                camBtn.classList.remove('active');
+                statusMessage.innerText = "🟢 Hazır. Dinləyirəm...";
+            }
+        });
+
+        // 4. SHUTDOWN BUTTON
+        const shutdownBtn = document.getElementById('shutdownBtn');
+        shutdownBtn.addEventListener('click', () => {
+            if (confirm("Sistemi söndürmək istəyirsiniz?")) {
+                isOnline = false;
+                document.getElementById('onlineDot').style.backgroundColor = '#ff3333';
+                document.getElementById('onlineDot').style.boxShadow = '0 0 8px #ff3333';
+                document.getElementById('onlineText').innerText = "OFFLINE";
+                statusMessage.innerText = "🔴 SİSTEM SÖNDÜRÜLDÜ";
+                outputBox.innerHTML += "\n\nSYS: Sistem dayandırıldı.";
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                if (cameraStream) {
+                    cameraStream.getTracks().forEach(track => track.stop());
+                    if (videoElement) videoElement.remove();
+                }
+            }
+        });
+
+        // Keyboard shortcuts support (F4, F5)
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'F4') {
+                e.preventDefault();
+                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            } else if (e.key === 'F5') {
+                e.preventDefault();
+                pauseBtn.click();
+            }
         });
     </script>
 </body>
