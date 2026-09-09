@@ -146,6 +146,7 @@
             <button class="dock-btn" id="micToggleBtn">🎤 LIVE</button>
             <button class="dock-btn" id="pauseBtn">⏸ PAUSE</button>
             <button class="dock-btn" id="camBtn">📷 CAM</button>
+            <button class="dock-btn" id="powerOnBtn" style="color: #00ffaa; display: none;">POWER ON</button>
             <button class="dock-btn shutdown" id="shutdownBtn">SHUTDOWN</button>
         </div>
     </main>
@@ -394,8 +395,10 @@
             }
         });
 
-        // 4. SHUTDOWN BUTTON
+        // 4. SHUTDOWN & POWER ON BUTTONS
         const shutdownBtn = document.getElementById('shutdownBtn');
+        const powerOnBtn = document.getElementById('powerOnBtn');
+
         shutdownBtn.addEventListener('click', () => {
             if (confirm("Sistemi söndürmək istəyirsiniz?")) {
                 isOnline = false;
@@ -404,12 +407,48 @@
                 document.getElementById('onlineText').innerText = "OFFLINE";
                 statusMessage.innerText = "🔴 SİSTEM SÖNDÜRÜLDÜ";
                 outputBox.innerHTML += "\n\nSYS: Sistem dayandırıldı.";
-                if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+                
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                }
+                
                 if (cameraStream) {
                     cameraStream.getTracks().forEach(track => track.stop());
                     if (videoElement) videoElement.remove();
+                    cameraStream = null;
+                    videoElement = null;
+                    camBtn.classList.remove('active');
                 }
+
+                userInput.disabled = true;
+                sendBtn.disabled = true;
+                micToggleBtn.disabled = true;
+                pauseBtn.disabled = true;
+                camBtn.disabled = true;
+                
+                shutdownBtn.style.display = 'none';
+                powerOnBtn.style.display = 'flex';
             }
+        });
+
+        powerOnBtn.addEventListener('click', () => {
+            isOnline = true;
+            isPaused = false;
+            document.getElementById('onlineDot').style.backgroundColor = '#ffaa00';
+            document.getElementById('onlineDot').style.boxShadow = '0 0 8px #ffaa00';
+            document.getElementById('onlineText').innerText = "ONLINE";
+            statusMessage.innerText = "🟢 BUTA AI Yenidən Aktivdir. Dinləyirəm...";
+            outputBox.innerHTML += "\n\nSYS: Sistem yenidən işə düşdü.";
+            
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            micToggleBtn.disabled = false;
+            pauseBtn.disabled = false;
+            camBtn.disabled = false;
+            
+            powerOnBtn.style.display = 'none';
+            shutdownBtn.style.display = 'flex';
+            pauseBtn.classList.remove('active');
         });
 
         // Keyboard shortcuts support (F4, F5)
